@@ -1,6 +1,6 @@
 <?php
 
-use Pollen\Query\PostQuery;
+use Pollora\Query\PostQuery;
 
 test('Order: orderby', function () {
     $args = PostQuery::select()

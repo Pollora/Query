@@ -1,6 +1,6 @@
 <?php
 
-use Pollen\Query\PostQuery;
+use Pollora\Query\PostQuery;
 
 test('Password: has_password=>true', function () {
     $args = PostQuery::select()

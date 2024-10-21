@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query;
+namespace Pollora\Query;
 
-use Pollen\Query\QueryBuilder\QueryBuilder;
-use Pollen\Query\QueryBuilder\TaxQueryBuilder;
+use Pollora\Query\QueryBuilder\QueryBuilder;
+use Pollora\Query\QueryBuilder\TaxQueryBuilder;
 
 class TaxQuery extends QueryBuilder
 {

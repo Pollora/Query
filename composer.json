@@ -1,5 +1,5 @@
 {
-    "name": "pollen/query",
+    "name": "pollora/query",
     "description": "Create WP Query in a fluent way.",
     "license": "GPL-2.0-or-later",
     "authors": [
@@ -11,7 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Pollen\\Query\\": "src/"
+            "Pollora\\Query\\": "src/"
         }
     },
     "require-dev": {
@@ -27,7 +27,7 @@
     },
     "require": {
         "php": "^8.1.0",
-        "pollen/wordpress-args": "dev-main",
+        "pollora/wordpress-args": "dev-main",
         "laravel/pint": "^1.13"
     }
 }

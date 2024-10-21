@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query\QueryBuilder;
+namespace Pollora\Query\QueryBuilder;
 
-use Pollen\Query\Utils\ValueTypeDetector;
+use Pollora\Query\Utils\ValueTypeDetector;
 
 class ComparisonBuilder
 {

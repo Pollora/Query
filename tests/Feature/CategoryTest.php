@@ -1,6 +1,6 @@
 <?php
 
-use Pollen\Query\PostQuery;
+use Pollora\Query\PostQuery;
 
 test('Category: cat', function () {
     $args = PostQuery::select()

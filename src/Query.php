@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query;
+namespace Pollora\Query;
 
-use Pollen\Query\QueryBuilder\DateQueryBuilder;
-use Pollen\Query\QueryBuilder\MetaQueryBuilder;
+use Pollora\Query\QueryBuilder\DateQueryBuilder;
+use Pollora\Query\QueryBuilder\MetaQueryBuilder;
 
 class Query
 {

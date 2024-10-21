@@ -1,6 +1,6 @@
 <?php
 
-use Pollen\Query\PostQuery;
+use Pollora\Query\PostQuery;
 
 test('Post: post_type', function () {
     $args = PostQuery::select()

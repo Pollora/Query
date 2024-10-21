@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query\Traits\Query;
+namespace Pollora\Query\Traits\Query;
 
-use Pollen\Query\QueryBuilder\SubQuery as SubQueryAbstract;
+use Pollora\Query\QueryBuilder\SubQuery as SubQueryAbstract;
 
 trait SubQuery
 {
@@ -44,7 +44,7 @@ trait SubQuery
 
     protected function initializeQueryBuilder(): void
     {
-        $class = '\\Pollen\\Query\\'.ucfirst($this->queryType).'Query';
+        $class = '\\Pollora\\Query\\'.ucfirst($this->queryType).'Query';
         $this->queryBuilder[$this->queryType] = $this->queryBuilder[$this->queryType] ?? new $class();
     }
 

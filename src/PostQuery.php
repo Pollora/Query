@@ -2,27 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query;
+namespace Pollora\Query;
 
-use Pollen\Query\Traits\Author;
-use Pollen\Query\Traits\Caching;
-use Pollen\Query\Traits\Category;
-use Pollen\Query\Traits\Comment;
-use Pollen\Query\Traits\DateQuery;
-use Pollen\Query\Traits\Field;
-use Pollen\Query\Traits\MetaQuery;
-use Pollen\Query\Traits\MimeType;
-use Pollen\Query\Traits\Order;
-use Pollen\Query\Traits\Pagination;
-use Pollen\Query\Traits\Password;
-use Pollen\Query\Traits\Permission;
-use Pollen\Query\Traits\Post as PostTrait;
-use Pollen\Query\Traits\PostType;
-use Pollen\Query\Traits\Search;
-use Pollen\Query\Traits\Status;
-use Pollen\Query\Traits\Tag;
-use Pollen\Query\Traits\TaxQuery;
-use Pollen\WordPressArgs\ArgumentHelper;
+use Pollora\Query\Traits\Author;
+use Pollora\Query\Traits\Caching;
+use Pollora\Query\Traits\Category;
+use Pollora\Query\Traits\Comment;
+use Pollora\Query\Traits\DateQuery;
+use Pollora\Query\Traits\Field;
+use Pollora\Query\Traits\MetaQuery;
+use Pollora\Query\Traits\MimeType;
+use Pollora\Query\Traits\Order;
+use Pollora\Query\Traits\Pagination;
+use Pollora\Query\Traits\Password;
+use Pollora\Query\Traits\Permission;
+use Pollora\Query\Traits\Post as PostTrait;
+use Pollora\Query\Traits\PostType;
+use Pollora\Query\Traits\Search;
+use Pollora\Query\Traits\Status;
+use Pollora\Query\Traits\Tag;
+use Pollora\Query\Traits\TaxQuery;
+use Pollora\WordPressArgs\ArgumentHelper;
 use WP_Query;
 
 class PostQuery

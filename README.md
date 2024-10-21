@@ -48,7 +48,7 @@ Let's consider an example where we want to query posts with specific criteria us
 #### Using `PostQuery` Wrapper
 
 ```php
-use Pollen\Query\PostQuery;
+use Pollora\Query\PostQuery;
 
 $results = PostQuery::select()
     ->postType('product')
@@ -152,21 +152,21 @@ The table of our good old Wp_Query is a little complex, isn't it? :)
 
 ## Installation
 
-To use the `PostQuery` wrapper in your WordPress project, you need to install the `pollen/query` package using Composer.
+To use the `PostQuery` wrapper in your WordPress project, you need to install the `pollora/query` package using Composer.
 
 If you're not using a WordPress environment that integrate composer, you can follow the steps described [in this article](https://deliciousbrains.com/storing-wordpress-in-git/).
 
-To install Pollen Query, run the following command :
+To install Pollora Query, run the following command :
 
 ```bash
-composer require pollen/query
+composer require pollora/query
 ```
 
-Composer will download and install the `pollen/query` package and its dependencies.
+Composer will download and install the `pollora/query` package and its dependencies.
 
 ### Using the `PostQuery` Wrapper
 
-Once you've installed the `pollen/query` package and set up Composer in your WordPress environment, you can use the `PostQuery` wrapper to construct and execute WordPress post queries as described in the previous sections.
+Once you've installed the `pollora/query` package and set up Composer in your WordPress environment, you can use the `PostQuery` wrapper to construct and execute WordPress post queries as described in the previous sections.
 
 Now, you're ready to harness the power and simplicity of the `PostQuery` wrapper in your WordPress project to streamline your post queries and improve code readability and maintainability.
 

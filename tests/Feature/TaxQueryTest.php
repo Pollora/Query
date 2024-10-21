@@ -1,7 +1,7 @@
 <?php
 
-use Pollen\Query\PostQuery;
-use Pollen\Query\TaxQuery;
+use Pollora\Query\PostQuery;
+use Pollora\Query\TaxQuery;
 
 test('TaxQuery: tax_query (simple)', function () {
     $args = PostQuery::select()->taxQuery(function (TaxQuery $query) {

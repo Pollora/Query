@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query\QueryBuilder;
+namespace Pollora\Query\QueryBuilder;
 
-use Pollen\Query\QueryException;
+use Pollora\Query\QueryException;
 
 class DateQueryBuilder extends SubQuery
 {

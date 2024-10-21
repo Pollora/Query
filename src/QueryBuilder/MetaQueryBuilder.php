@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query\QueryBuilder;
+namespace Pollora\Query\QueryBuilder;
 
 class MetaQueryBuilder extends SubQuery
 {

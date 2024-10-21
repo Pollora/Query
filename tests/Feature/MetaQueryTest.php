@@ -1,8 +1,8 @@
 <?php
 
-use Pollen\Query\MetaQuery;
-use Pollen\Query\PostQuery;
-use Pollen\Query\Query;
+use Pollora\Query\MetaQuery;
+use Pollora\Query\PostQuery;
+use Pollora\Query\Query;
 
 test('MetaQuery: meta_query (simple)', function () {
     $args = PostQuery::select()->metaQuery(function (MetaQuery $query) {

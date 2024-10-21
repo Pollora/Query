@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query\Utils;
+namespace Pollora\Query\Utils;
 
-use Pollen\Query\Utils\Types\BooleanType;
-use Pollen\Query\Utils\Types\CharType;
-use Pollen\Query\Utils\Types\DatetimeType;
-use Pollen\Query\Utils\Types\NullableType;
-use Pollen\Query\Utils\Types\NumberType;
-use Pollen\Query\Utils\Types\ValueTypeContract;
+use Pollora\Query\Utils\Types\BooleanType;
+use Pollora\Query\Utils\Types\CharType;
+use Pollora\Query\Utils\Types\DatetimeType;
+use Pollora\Query\Utils\Types\NullableType;
+use Pollora\Query\Utils\Types\NumberType;
+use Pollora\Query\Utils\Types\ValueTypeContract;
 
 class ValueTypeDetector
 {

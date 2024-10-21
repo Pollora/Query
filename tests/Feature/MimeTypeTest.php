@@ -1,6 +1,6 @@
 <?php
 
-use Pollen\Query\PostQuery;
+use Pollora\Query\PostQuery;
 
 it('Mimetype: string', function () {
     $args = PostQuery::select()

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query\Traits;
+namespace Pollora\Query\Traits;
 
-use Pollen\Query\PostQuery;
+use Pollora\Query\PostQuery;
 
 trait Post
 {

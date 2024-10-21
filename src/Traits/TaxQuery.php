@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query\Traits;
+namespace Pollora\Query\Traits;
 
-use Pollen\Query\QueryBuilder\SubQuery;
-use Pollen\Query\Traits\Query\SubQuery as SubQueryTrait;
+use Pollora\Query\QueryBuilder\SubQuery;
+use Pollora\Query\Traits\Query\SubQuery as SubQueryTrait;
 
 trait TaxQuery
 {

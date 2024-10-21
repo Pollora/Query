@@ -1,7 +1,7 @@
 <?php
 
-use Pollen\Query\DateQuery;
-use Pollen\Query\PostQuery;
+use Pollora\Query\DateQuery;
+use Pollora\Query\PostQuery;
 
 test('DateQuery: date_query (simple)', function () {
     $args = PostQuery::select()->dateQuery(function (DateQuery $query) {

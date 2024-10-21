@@ -8,9 +8,9 @@ declare(strict_types=1);
  * This class represents a query builder for taxonomies in WordPress.
  */
 
-namespace Pollen\Query\QueryBuilder;
+namespace Pollora\Query\QueryBuilder;
 
-use Pollen\Query\QueryException;
+use Pollora\Query\QueryException;
 
 /**
  * Class TaxQueryBuilder

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pollen\Query\Utils\Types;
+namespace Pollora\Query\Utils\Types;
 
 final class BooleanType implements ValueTypeContract
 {
