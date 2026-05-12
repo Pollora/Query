@@ -14,7 +14,12 @@
             "Pollora\\Query\\": "src/"
         }
     },
+    "require": {
+        "php": "^8.2",
+        "pollora/wordpress-args": "^1.1"
+    },
     "require-dev": {
+        "laravel/pint": "^1.13",
         "pestphp/pest": "^2.19",
         "rector/rector": "^0.18.4",
         "nunomaduro/phpinsights": "^2.8"
@@ -24,10 +29,5 @@
             "pestphp/pest-plugin": true,
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
-    },
-    "require": {
-        "php": "^8.2",
-        "pollora/wordpress-args": "^1.1",
-        "laravel/pint": "^1.13"
     }
 }
