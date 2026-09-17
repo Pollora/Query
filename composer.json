@@ -1,7 +1,7 @@
 {
     "name": "pollora/query",
     "description": "Create WP Query in a fluent way.",
-    "license": "GPL-2.0-or-later",
+    "license": "MIT",
     "authors": [
         {
             "name": "Olivier Gorzalka",
