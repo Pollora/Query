@@ -1,54 +1,91 @@
-# PostQuery Class
+<p align="center">
+  <a href="https://pollora.dev">
+    <img src="https://raw.githubusercontent.com/Pollora/.github/main/brand/banners/Query.png" width="100%" alt="Query: a fluent builder for WP_Query">
+  </a>
+</p>
 
-The `PostQuery` class is a fluent interface for constructing WP_Query objects in WordPress. This class simplifies the process of building complex queries and provides a more readable and concise way to define query parameters.
+<p align="center">
+  <a href="https://packagist.org/packages/pollora/query"><img src="https://img.shields.io/packagist/v/pollora/query" alt="Latest version"></a>
+  <a href="https://packagist.org/packages/pollora/query"><img src="https://img.shields.io/packagist/dt/pollora/query" alt="Total downloads"></a>
+  <a href="https://github.com/Pollora/Query/actions/workflows/ci.yml"><img src="https://github.com/Pollora/Query/actions/workflows/ci.yml/badge.svg" alt="Tests"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Pollora/Query" alt="License"></a>
+</p>
 
-- [Advantages](#advantages-of-using-postquery-wrapper)
-- [Installation](#installation)
-- [Basic Usage](#basic-usage)
-- [Author](#author)
-- [Category](#category)
-- [Tag](#tag)
-- [Tax_Query](#tax_query)
-- [Search](#search)
-- [Post](#post)
-- [Password](#password)
-- [Status](#status)
-- [Comment Parameter](#comment-parameter)
-- [Pagination](#pagination)
-- [Order](#order)
-- [Date](#date)
-- [Meta Query](#meta-query)
-- [Permission](#permission)
-- [Mimetype](#mimetype)
-- [Cache](#cache)
+Query builds `WP_Query` objects with chained, type-hinted methods instead of nested arrays. `PostQuery` covers the `WP_Query` parameters (authors, taxonomies, meta, dates, pagination, order, cache…) and `TaxQuery`, `MetaQuery` and `DateQuery` build the nested sub-queries. It is for WordPress developers who are tired of looking up array keys and debugging misplaced `relation` entries.
 
+> Part of [Pollora](https://pollora.dev), the Laravel framework for WordPress. In a Pollora project it is already installed: use the `Pollora\Support\Facades\PostQuery` facade.
 
-## Advantages of Using `PostQuery` Wrapper
+## Installation
 
-When using the `PostQuery` wrapper, you gain several advantages over using the original `WP_Query` class for querying posts in WordPress:
+```bash
+composer require pollora/query
+```
 
-1. **Method Chaining**: The `PostQuery` wrapper allows for method chaining, making it easier to construct and read complex queries in a more fluent and readable manner.
+Requires PHP 8.2+ and WordPress: `get()` returns a `WP_Query`. If your WordPress site does not use Composer yet, see [this article on managing WordPress with Composer](https://deliciousbrains.com/storing-wordpress-in-git/).
 
-2. **Type Safety**: `PostQuery` provides type-hinted methods, reducing the risk of runtime errors by ensuring that the correct data types are used for query parameters.
+## Quick start
 
-3. **Readable and Expressive**: The methods in `PostQuery` have descriptive names, making it easier to understand the purpose of each query parameter.
-
-4. **Consistency**: `PostQuery` enforces consistent naming conventions and provides a standardized way to query posts, enhancing code maintainability.
-
-5. **Improved Code Structure**: Using `PostQuery` promotes cleaner and more organized code, separating query logic from the rest of your application.
-
-6. **Reduced Boilerplate**: The wrapper simplifies common tasks, reducing the amount of boilerplate code needed to create queries.
-
-6. **IDE Autocompletion:** Unlike array-based arguments, the `PostQuery` wrapper provides autocompletion support in IDEs, which can significantly improve developer productivity and reduce coding errors.
-
-### Comprehensive Example
-
-Let's consider an example where we want to query posts with specific criteria using the `PostQuery` wrapper and compare it to the equivalent `WP_Query` code. We'll combine various methods to construct a complex query.
-
-#### Using `PostQuery` Wrapper
+The five latest published articles:
 
 ```php
 use Pollora\Query\PostQuery;
+
+$query = PostQuery::select()
+    ->postType('post')
+    ->postStatus('publish')
+    ->latest()
+    ->take(5)
+    ->get(); // WP_Query
+```
+
+Active products in a category, with a meta query and a tax query:
+
+```php
+use Pollora\Query\MetaQuery;
+use Pollora\Query\PostQuery;
+use Pollora\Query\TaxQuery;
+
+$query = PostQuery::select()
+    ->postType('product')
+    ->taxQuery(function (TaxQuery $query) {
+        $query->where(
+            $query->taxonomy('category')->contains(['tee-shirt', 'sportswear'])->searchByTermSlug()
+        );
+    })
+    ->metaQuery(function (MetaQuery $query) {
+        $query->where($query->meta('status')->equalTo('active'));
+    })
+    ->get();
+```
+
+Only the IDs of a few posts, or the arguments without running the query:
+
+```php
+$ids = PostQuery::find([1, 2, 3])->fields('ids')->get()->posts;
+
+$args = PostQuery::select()->postType('page')->postParent(5)->getArguments();
+// ['post_type' => 'page', 'post_parent' => 5, 'fields' => 'all', ...]
+```
+
+## Why PostQuery
+
+Compared with passing an array to `WP_Query`:
+
+- Chained methods with descriptive names, which read top to bottom.
+- Type-hinted parameters and IDE autocompletion, instead of array keys to remember.
+- Tax, meta and date sub-queries built with `where()` and `orWhere()`: the `relation` keys and the nesting are written for you.
+
+### A complete example
+
+A query combining a post type, a tax query, a date query, a meta query, a permission and caching, then the `WP_Query` arguments it replaces.
+
+#### With `PostQuery`
+
+```php
+use Pollora\Query\DateQuery;
+use Pollora\Query\MetaQuery;
+use Pollora\Query\PostQuery;
+use Pollora\Query\TaxQuery;
 
 $results = PostQuery::select()
     ->postType('product')
@@ -82,7 +119,7 @@ $results = PostQuery::select()
     ->get();
 ```
 
-#### Equivalent `WP_Query` Code
+#### The equivalent `WP_Query`
 
 ```php
 new WP_Query([
@@ -148,35 +185,19 @@ new WP_Query([
 ]);
 ```
 
-The table of our good old Wp_Query is a little complex, isn't it? :)
+The same query as a `WP_Query` array is much harder to read and to get right.
 
-## Installation
+## Reference
 
-To use the `PostQuery` wrapper in your WordPress project, you need to install the `pollora/query` package using Composer.
+[Basic usage](#basic-usage) · [Author](#author) · [Category](#category) · [Tag](#tag) · [Tax query](#tax-query) · [Search](#search) · [Post](#post) · [Password](#password) · [Status](#status) · [Comment Parameter](#comment-parameter) · [Pagination](#pagination) · [Order](#order) · [Date](#date) · [Meta Query](#meta-query) · [Permission](#permission) · [Mimetype](#mimetype) · [Cache](#cache)
 
-If you're not using a WordPress environment that integrate composer, you can follow the steps described [in this article](https://deliciousbrains.com/storing-wordpress-in-git/).
-
-To install Pollora Query, run the following command :
-
-```bash
-composer require pollora/query
-```
-
-Composer will download and install the `pollora/query` package and its dependencies.
-
-### Using the `PostQuery` Wrapper
-
-Once you've installed the `pollora/query` package and set up Composer in your WordPress environment, you can use the `PostQuery` wrapper to construct and execute WordPress post queries as described in the previous sections.
-
-Now, you're ready to harness the power and simplicity of the `PostQuery` wrapper in your WordPress project to streamline your post queries and improve code readability and maintainability.
-
-## Basic Usage
+### Basic usage
 
 To get started with the `PostQuery` class, you can use the `select()` method to specify the fields you want to retrieve and the `get()` method to generate a WP_Query object with the corresponding arguments.
 
-By default, the `PostQuery` class adopts a more intuitive approach when it comes to querying posts by post type. Unlike the default behavior of WordPress's `WP_Query`, which sets the `post_type` parameter to `'post'` if not specified, the `PostQuery` class assumes a broader scope. It sets the `post_type` parameter to `'all'` by default, indicating that it will search across all post types. This default behavior aligns with a more logical and inclusive approach, ensuring that you can effortlessly query posts of any type without needing to explicitly specify the post type every time you create a query. This simplifies the process and enhances flexibility when constructing your queries.
+By default, the `PostQuery` class adopts a more intuitive approach when it comes to querying posts by post type. Unlike the default behavior of WordPress's `WP_Query`, which sets the `post_type` parameter to `'post'` if not specified, the `PostQuery` class assumes a broader scope. It sets the `post_type` parameter to `'any'` by default, indicating that it will search across all post types. This default behavior aligns with a more logical and inclusive approach, ensuring that you can effortlessly query posts of any type without needing to explicitly specify the post type every time you create a query. This simplifies the process and enhances flexibility when constructing your queries.
 
-### Retrieve All Fields
+#### Retrieve All Fields
 
 ```php
 PostQuery::select()->get(); // Equivalent to PostQuery::select('*')->get();
@@ -193,7 +214,7 @@ new WP_Query([
 
 In this case, the `fields` argument is set to `'all'`, indicating that all fields should be retrieved.
 
-### Specify Specific Fields
+#### Specify Specific Fields
 
 You can use the `select()` method with specific field names to tailor your query to your needs.
 
@@ -206,13 +227,13 @@ This will generate the following WP_Query arguments:
 ```php
 new WP_Query([
     'fields' => 'id=>parent',
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
 Here, the `fields` argument is set to `'id=>parent'`, which means only the 'id' and 'parent' fields will be retrieved.
 
-### Retrieve Only IDs
+#### Retrieve Only IDs
 
 To retrieve only the IDs of the posts, you can use the following code:
 
@@ -225,13 +246,13 @@ This will generate the following WP_Query arguments:
 ```php
 new WP_Query([
     'fields' => 'ids',
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
 In this case, the `fields` argument is set to `'ids'`, indicating that only the post IDs will be returned.
 
-### Find specific post id
+#### Find specific post id
 
 The `find($postID)` method is used to create a WP_Query instance that retrieves a specific post by its ID. This method simplifies the process of querying a single post and allows you to specify the fields you want to retrieve.
 
@@ -253,17 +274,17 @@ This will generate the following WP_Query arguments:
 new WP_Query([
     'p' => 1,           // Retrieve the post with ID 1
     'fields' => 'ids',  // Retrieve only the post ID
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-In this example, the `find(1)` method specifies that you want to retrieve the post with ID 1, the `fields('ids')` method indicates that you only want to retrieve the post ID, and the `post_type` argument is set to `'all'`, including all post types in the query.
+In this example, the `find(1)` method specifies that you want to retrieve the post with ID 1, the `fields('ids')` method indicates that you only want to retrieve the post ID, and the `post_type` argument is set to `'any'`, including all post types in the query.
 
-## Author
+### Author
 
 The `PostQuery` class provides several methods for specifying the author(s) of the posts you want to retrieve. These methods allow you to filter posts based on author IDs, author usernames, and author IDs to include or exclude.
 
-### author($authorID)
+#### author($authorID)
 
 The `author($authorID)` method allows you to query posts authored by a specific user using their user ID. Here's an example:
 
@@ -278,11 +299,11 @@ This will generate the following WP_Query arguments:
 ```php
 new WP_Query([
     'author' => 1,       // Retrieve posts authored by the user with ID 1
-    'post_type' => 'all' // Include all post types in the query
+    'post_type' => 'any' // Include all post types in the query
 ]);
 ```
 
-### authorName($authorUsername)
+#### authorName($authorUsername)
 
 The `authorName($authorUsername)` method allows you to query posts authored by a specific user using their username. Here's an example:
 
@@ -297,11 +318,11 @@ This will generate the following WP_Query arguments:
 ```php
 new WP_Query([
     'author_name' => 'taylor', // Retrieve posts authored by the user with the username 'taylor'
-    'post_type' => 'all'      // Include all post types in the query
+    'post_type' => 'any'      // Include all post types in the query
 ]);
 ```
 
-### authorIn($authorIDs)
+#### authorIn($authorIDs)
 
 The `authorIn($authorIDs)` method allows you to query posts authored by one or more users specified by their user IDs. You can pass an array of user IDs to this method. Here's an example:
 
@@ -316,11 +337,11 @@ This will generate the following WP_Query arguments:
 ```php
 new WP_Query([
     'author__in' => [1, 2, 3], // Retrieve posts authored by users with IDs 1, 2, or 3
-    'post_type' => 'all'       // Include all post types in the query
+    'post_type' => 'any'       // Include all post types in the query
 ]);
 ```
 
-### authorNotIn($authorIDs)
+#### authorNotIn($authorIDs)
 
 The `authorNotIn($authorIDs)` method allows you to exclude posts authored by one or more users specified by their user IDs. You can pass an array of user IDs to this method. Here's an example:
 
@@ -335,15 +356,15 @@ This will generate the following WP_Query arguments:
 ```php
 new WP_Query([
     'author__not_in' => [1, 2, 3], // Exclude posts authored by users with IDs 1, 2, or 3
-    'post_type' => 'all'           // Include all post types in the query
+    'post_type' => 'any'           // Include all post types in the query
 ]);
 ```
 
-## Category
+### Category
 
 The `PostQuery` class allows you to query posts based on categories using various methods. These methods enable you to filter posts by category ID, category name, and include or exclude categories.
 
-### cat($categoryID)
+#### cat($categoryID)
 
 The `cat($categoryID)` method allows you to query posts belonging to a specific category by specifying its category ID. Here's an example:
 
@@ -358,11 +379,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'cat' => 1,       // Retrieve posts from category with ID 1
-    'post_type' => 'all', // Include all post types in the query
+    'post_type' => 'any', // Include all post types in the query
 ]);
 ```
 
-### categoryName($categoryName)
+#### categoryName($categoryName)
 
 The `categoryName($categoryName)` method allows you to query posts belonging to a specific category by specifying its name. Here's an example:
 
@@ -377,11 +398,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'category_name' => 'sales', // Retrieve posts from the 'sales' category
-    'post_type' => 'all',       // Include all post types in the query
+    'post_type' => 'any',       // Include all post types in the query
 ]);
 ```
 
-### categoryIn($categoryIDs)
+#### categoryIn($categoryIDs)
 
 The `categoryIn($categoryIDs)` method allows you to include posts from one or more categories specified by their category IDs. You can pass an array of category IDs to this method. Here's an example:
 
@@ -396,11 +417,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'category__in' => [1, 2, 3], // Include posts from categories with IDs 1, 2, or 3
-    'post_type' => 'all',        // Include all post types in the query
+    'post_type' => 'any',        // Include all post types in the query
 ]);
 ```
 
-### categoryNotIn($categoryIDs)
+#### categoryNotIn($categoryIDs)
 
 The `categoryNotIn($categoryIDs)` method allows you to exclude posts from one or more categories specified by their category IDs. You can pass an array of category IDs to this method. Here's an example:
 
@@ -415,15 +436,15 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'category__not_in' => [1, 2, 3], // Exclude posts from categories with IDs 1, 2, or 3
-    'post_type' => 'all',           // Include all post types in the query
+    'post_type' => 'any',           // Include all post types in the query
 ]);
 ```
 
-## Tag
+### Tag
 
 The `PostQuery` class allows you to query posts based on tags using various methods. These methods enable you to filter posts by tag name, tag ID, tag slugs, and include or exclude tags.
 
-### tag($tagName)
+#### tag($tagName)
 
 The `tag($tagName)` method allows you to query posts associated with a specific tag by specifying its name. Here's an example:
 
@@ -438,11 +459,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'tag' => 'programming', // Retrieve posts associated with the 'programming' tag
-    'post_type' => 'all',   // Include all post types in the query
+    'post_type' => 'any',   // Include all post types in the query
 ]);
 ```
 
-### tagId($tagID)
+#### tagId($tagID)
 
 The `tagId($tagID)` method allows you to query posts associated with a specific tag by specifying its ID. Here's an example:
 
@@ -457,11 +478,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'tag_id' => 1,       // Retrieve posts associated with the tag with ID 1
-    'post_type' => 'all', // Include all post types in the query
+    'post_type' => 'any', // Include all post types in the query
 ]);
 ```
 
-### tagAnd($tagIDs)
+#### tagAnd($tagIDs)
 
 The `tagAnd($tagIDs)` method allows you to query posts that are associated with all of the specified tags by specifying their IDs. You can pass an array of tag IDs to this method. Here's an example:
 
@@ -476,11 +497,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'tag__and' => [1, 2], // Retrieve posts associated with both tags with IDs 1 and 2
-    'post_type' => 'all', // Include all post types in the query
+    'post_type' => 'any', // Include all post types in the query
 ]);
 ```
 
-### tagIn($tagIDs)
+#### tagIn($tagIDs)
 
 The `tagIn($tagIDs)` method allows you to query posts associated with one or more tags by specifying their IDs. You can pass an array of tag IDs to this method. Here's an example:
 
@@ -495,11 +516,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'tag__in' => [3, 4], // Retrieve posts associated with tags with IDs 3 or 4
-    'post_type' => 'all', // Include all post types in the query
+    'post_type' => 'any', // Include all post types in the query
 ]);
 ```
 
-### tagNotIn($tagIDs)
+#### tagNotIn($tagIDs)
 
 The `tagNotIn($tagIDs)` method allows you to exclude posts associated with one or more tags by specifying their IDs. You can pass an array of tag IDs to this method. Here's an example:
 
@@ -514,11 +535,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'tag__not_in' => [5, 6], // Exclude posts associated with tags with IDs 5 or 6
-    'post_type' => 'all',    // Include all post types in the query
+    'post_type' => 'any',    // Include all post types in the query
 ]);
 ```
 
-### tagSlugAnd($tagSlugs)
+#### tagSlugAnd($tagSlugs)
 
 The `tagSlugAnd($tagSlugs)` method allows you to query posts that are associated with all of the specified tags by specifying their slugs. You can pass an array of tag slugs to this method. Here's an example:
 
@@ -533,11 +554,11 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'tag_slug__and' => ['dev', 'qa'], // Retrieve posts associated with both 'dev' and 'qa' tags
-    'post_type' => 'all',            // Include all post types in the query
+    'post_type' => 'any',            // Include all post types in the query
 ]);
 ```
 
-### tagSlugIn($tagSlugs)
+#### tagSlugIn($tagSlugs)
 
 The `tagSlugIn($tagSlugs)` method allows you to query posts associated with one or more tags by specifying their slugs. You can pass an array of tag slugs to this method. Here's an example:
 
@@ -552,15 +573,15 @@ This generates the following WP_Query arguments:
 ```php
 new WP_Query([
     'tag_slug__in' => ['frontend', 'backend'], // Retrieve posts associated with 'frontend' or 'backend' tags
-    'post_type' => 'all',                     // Include all post types in the query
+    'post_type' => 'any',                     // Include all post types in the query
 ]);
 ```
 
-## Tax_Query
+### Tax query
 
 The `PostQuery` class allows you to filter posts based on taxonomy terms using the `taxQuery()` method. This method provides a powerful way to construct complex queries involving taxonomy terms and their relationships.
 
-### Simple tax query
+#### Simple tax query
 
 In its simplest form, you can use the `taxQuery()` method to filter posts by a single taxonomy and a list of terms. For example:
 
@@ -581,7 +602,7 @@ This generates the following WP_Query arguments:
 
 ```php
 new WP_Query([
-    'post_type' => 'all',
+    'post_type' => 'any',
     'tax_query' => [
         'relation' => 'AND',
         [
@@ -595,7 +616,7 @@ new WP_Query([
 ]);
 ```
 
-### 'OR' Relation
+#### 'OR' Relation
 
 You can also use the 'OR' relation to query posts that match any of the specified taxonomy conditions. For example:
 
@@ -621,7 +642,7 @@ This generates the following WP_Query arguments:
 
 ```php
 new WP_Query([
-    'post_type' => 'all',
+    'post_type' => 'any',
     'tax_query' => [
         'relation' => 'OR',
         [
@@ -642,7 +663,7 @@ new WP_Query([
 ]);
 ```
 
-### Nested Conditions
+#### Nested Conditions
 
 You can also create nested conditions within the Tax_Query. In the following example, we use nested conditions with 'OR' and 'AND' relations:
 
@@ -679,7 +700,7 @@ This generates the following WP_Query arguments:
 
 ```php
 new WP_Query([
-    'post_type' => 'all',
+    'post_type' => 'any',
     'tax_query' => [
         'relation' => 'OR',
         [
@@ -735,11 +756,11 @@ new WP_Query([
 ])
 ```
 
-## Search
+### Search
 
 The `PostQuery` class allows you to perform keyword-based searches on posts using the `search()` method. This method helps you filter posts that match a specific keyword or phrase.
 
-### search($keyword)
+#### search($keyword)
 
 The `search($keyword)` method allows you to perform a keyword-based search for posts. You can specify the desired keyword or phrase as a parameter. Here's an example:
 
@@ -754,15 +775,15 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     's' => 'my keyword', // Perform a keyword-based search for posts containing 'my keyword'
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-## Post
+### Post
 
 The `PostQuery` class provides methods for filtering posts based on various post-related parameters. These methods allow you to specify the post type, post ID, post slug, post parent, and more.
 
-### postType($type)
+#### postType($type)
 
 The `postType($type)` method allows you to specify the post type you want to query. You can provide the post type as a parameter. Here's an example:
 
@@ -780,7 +801,7 @@ new WP_Query([
 ]);
 ```
 
-### postId($id)
+#### postId($id)
 
 The `postId($id)` method allows you to query a specific post by its ID. You can provide the post ID as a parameter. For example:
 
@@ -795,11 +816,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'p' => 42, // Retrieve the post with ID 42
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-### postSlug($slug)
+#### postSlug($slug)
 
 The `postSlug($slug)` method allows you to query a specific post by its slug. You can provide the post slug as a parameter. For example:
 
@@ -814,12 +835,12 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'name' => 'mon-article', // Retrieve the post with the slug 'mon-article'
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 
 ```
 
-### postParent($parentID)
+#### postParent($parentID)
 
 The `postParent($parentID)` method allows you to query posts that have a specific parent post. You can provide the parent post ID as a parameter. For example:
 
@@ -834,11 +855,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post_parent' => 5, // Retrieve posts with a parent post of ID 5
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-### whereParentIn($parentIDs)
+#### whereParentIn($parentIDs)
 
 The `whereParentIn($parentIDs)` method allows you to query posts that have parent posts specified by their IDs. You can pass an array of parent post IDs to this method. For example:
 
@@ -853,11 +874,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post_parent__in' => [1, 2, 3], // Retrieve posts with parent post IDs in the array
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-### whereParentNotIn($parentIDs)
+#### whereParentNotIn($parentIDs)
 
 The `whereParentNotIn($parentIDs)` method allows you to exclude posts that have parent posts specified by their IDs. You can pass an array of parent post IDs to this method. For example:
 
@@ -872,11 +893,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post_parent__not_in' => [4, 5, 6], // Exclude posts with parent post IDs in the array
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-### whereIn($postIDs)
+#### whereIn($postIDs)
 
 The `whereIn($postIDs)` method allows you to query posts with specific IDs. You can pass an array of post IDs to this method. For example:
 
@@ -891,11 +912,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post__in' => [7, 8, 9], // Retrieve posts with IDs in the array
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-### whereNotIn($postIDs)
+#### whereNotIn($postIDs)
 
 The `whereNotIn($postIDs)` method allows you to exclude posts with specific IDs. You can pass an array of post IDs to this method. For example:
 
@@ -910,11 +931,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post__not_in' => [10, 11, 12], // Exclude posts with IDs in the array
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-### slugIn($slugs)
+#### slugIn($slugs)
 
 The `slugIn($slugs)` method allows you to query posts with specific slugs. You can pass an array of post slugs to this method. For example:
 
@@ -929,11 +950,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post_name__in' => ['slug-1', 'slug-2'], // Retrieve posts with slugs in the array
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-### Note: 'pagename' and 'page_id'
+#### Note: 'pagename' and 'page_id'
 
 Unlike WP_Query, the `PostQuery` class does not provide separate methods for 'pagename' and 'page_id' parameters. Instead, you can use 'name' and 'p' parameters while specifying the 'post_type' as 'page' to achieve the equivalent results:
 
@@ -950,15 +971,15 @@ This generates the following WP_Query argument:
 new WP_Query([
     'post_type' => 'page',   // Query for pages
     'name' => 'my-page',     // Specify the page slug
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-## Password
+### Password
 
 The `PostQuery` class provides methods to filter posts based on their password protection status and the specific post password.
 
-### withPassword()
+#### withPassword()
 
 The `withPassword()` method allows you to query posts that have a password protection set. You can use this method to retrieve posts that require a password to access. For example:
 
@@ -973,11 +994,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'has_password' => true, // Retrieve posts with password protection
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-### withoutPassword()
+#### withoutPassword()
 
 The `withoutPassword()` method allows you to query posts that do not have a password protection set. You can use this method to exclude posts that require a password to access. For example:
 
@@ -992,11 +1013,11 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'has_password' => false, // Exclude posts with password protection
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-### withPassword($password)
+#### withPassword($password)
 
 The `withPassword($password)` method allows you to query posts that have a specific post password set. You can provide the desired post password as a parameter. For example:
 
@@ -1011,15 +1032,15 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post_password' => 'zxcvbn', // Retrieve posts with the specified post password
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
-## Status
+### Status
 
 The `PostQuery` class allows you to filter posts based on their status using the `postStatus()` method. This method helps you query posts with a specific status.
 
-### postStatus($status)
+#### postStatus($status)
 
 The `postStatus($status)` method allows you to specify the status of posts you want to retrieve. You can provide the desired status as a parameter. For example:
 
@@ -1034,17 +1055,17 @@ This generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post_status' => 'publish', // Retrieve posts with the 'publish' status
-    'post_type' => 'all'
+    'post_type' => 'any'
 ]);
 ```
 
 You can use this method to query posts with different statuses such as 'publish,' 'draft,' 'pending,' or custom statuses defined in your WordPress installation. It provides precise control over the status of the posts you retrieve in your queries.
 
-## Comment Parameter
+### Comment Parameter
 
 The `PostQuery` class provides a method to filter posts based on the number of comments they have using the `commentCount()` method. This method allows you to retrieve posts with a specific number of comments.
 
-### commentCount($count)
+#### commentCount($count)
 
 The `commentCount($count)` method allows you to specify the number of comments a post should have in order to be retrieved in the query. You can provide the desired comment count as a parameter. For example:
 
@@ -1062,11 +1083,11 @@ new WP_Query([
 ]);
 ```
 
-## Pagination
+### Pagination
 
 The `PostQuery` class provides methods to control the pagination of query results. These methods allow you to specify the number of posts to retrieve per page, skip a certain number of posts, and more.
 
-### take($count), limit($count) or postsPerPage($count)
+#### take($count), limit($count) or postsPerPage($count)
 
 The `take($count)`, `limit($count)`, and `postsPerPage($count)` methods allow you to specify the number of posts to retrieve per page. You can provide the desired post count as a parameter. For example:
 
@@ -1086,7 +1107,7 @@ new WP_Query([
 
 You can use these methods to control the number of posts displayed on each page of your query results.
 
-### skip($count) or offset($count)
+#### skip($count) or offset($count)
 
 The `skip($count)` and `offset($count)` methods allow you to skip a certain number of posts in the query results. You can provide the desired skip count as a parameter. For example:
 
@@ -1106,7 +1127,7 @@ new WP_Query([
 
 You can use these methods to skip a specific number of posts, useful for creating paginated queries.
 
-### noPaging()
+#### noPaging()
 
 The `noPaging()` method allows you to disable pagination entirely, retrieving all posts matching the query without any pagination. For example:
 
@@ -1126,7 +1147,7 @@ new WP_Query([
 
 Use this method when you want to retrieve all matching posts in a single query, regardless of the number.
 
-### postsPerArchivePage($count)
+#### postsPerArchivePage($count)
 
 The `postsPerArchivePage($count)` method allows you to specify the number of posts to display per archive page. This is particularly useful for archive pages like category or tag archives. For example:
 
@@ -1146,7 +1167,7 @@ new WP_Query([
 
 You can use this method to control the number of posts displayed on archive pages.
 
-### page($pageNumber)
+#### page($pageNumber)
 
 The `page($pageNumber)` method allows you to specify the page number when paginating query results. You can provide the desired page number as a parameter. For example:
 
@@ -1166,7 +1187,7 @@ new WP_Query([
 
 Use this method when you want to retrieve a specific page of results in a paginated query.
 
-### ignoreStickyPosts()
+#### ignoreStickyPosts()
 
 The `ignoreStickyPosts()` method allows you to exclude sticky posts from the query results. Sticky posts are posts that are pinned to the top of the list. For example:
 
@@ -1184,11 +1205,11 @@ new WP_Query([
 ]);
 ```
 
-## Order
+### Order
 
 The `PostQuery` class provides methods to control the order in which posts are retrieved. You can specify one or more orderby parameters to sort the query results based on various criteria.
 
-### orderBy($field, $order = 'DESC')
+#### orderBy($field, $order = 'DESC')
 
 The `orderBy($field, $order = 'DESC')` method allows you to specify the field by which the posts should be ordered and the order in which they should be sorted. You can provide the desired field and order as parameters. For example:
 
@@ -1210,11 +1231,19 @@ new WP_Query([
 ]);
 ```
 
-## Date
+#### latest(), oldest() and inRandomOrder()
+
+Shortcuts: `latest()` orders by `post_date` descending, `oldest()` by `post_date` ascending, and `inRandomOrder()` sets `orderby` to `rand`.
+
+```php
+PostQuery::select()->latest()->get();
+```
+
+### Date
 
 The `PostQuery` class allows you to query posts based on date-related criteria using the `DateQuery` class. This class provides methods to create complex date queries, allowing you to filter posts by their publication, modification, or custom dates.
 
-### `dateQuery($callback)`
+#### `dateQuery($callback)`
 
 The `dateQuery($callback)` method allows you to define a complex date query using the `DateQuery` class. You can pass a callback function to create the date query conditions. For example:
 
@@ -1261,7 +1290,7 @@ new WP_Query([
 
 You can use this method to create complex date queries that include conditions like before, after, and inclusive/exclusive settings.
 
-### `date($column = 'post_date')`
+#### `date($column = 'post_date')`
 
 The `date($column = 'post_date')` method within the `DateQuery` class allows you to specify the column or type of date to query. You can choose from 'post_date,' 'post_modified,' or other custom date columns. For example:
 
@@ -1269,31 +1298,31 @@ The `date($column = 'post_date')` method within the `DateQuery` class allows you
 $query->date('edited_at');
 ```
 
-### `before($date)`
+#### `before($date)`
 
 The `before($date)` method within the `DateQuery` class allows you to specify that the date should be before a certain point in time. You can provide the date in various formats, such as 'YYYY-MM-DD' or an array specifying 'year,' 'month,' 'day,' 'hour,' 'minute,' and 'second.'
 
-### `after($date)`
+#### `after($date)`
 
 The `after($date)` method within the `DateQuery` class allows you to specify that the date should be after a certain point in time. Like the `before()` method, you can provide the date in various formats.
 
-### `between($start, $end)`
+#### `between($start, $end)`
 
 The `between($start, $end)` method within the `DateQuery` class allows you to specify that the date should be between two points in time. You can provide the start and end dates in various formats.
 
-### `created()`
+#### `created()` and `modified()`
 
-The `modified()` method within the `DateQuery` class allows you to specify that the date query should apply to the last modified date of the post, as opposed to the default 'post_date' column. This is useful for distinguishing between post creation and modification dates.
+The `created()` method within the `DateQuery` class makes the date query apply to the publication date of the post (`post_date`, the default column). The `modified()` method makes it apply to the last modified date (`post_modified`). This is useful for distinguishing between post creation and modification dates.
 
-### `inclusive()`
+#### `inclusive()`
 
 The `inclusive()` method within the `DateQuery` class allows you to specify that the date query should include posts that match the exact date and time specified. This is particularly useful when using the `before()` and `after()` methods.
 
-## Meta Query
+### Meta Query
 
 The `PostQuery` class allows you to perform custom queries based on post metadata using the `MetaQuery` class. This class provides methods to create complex meta queries, allowing you to filter posts based on custom field values.
 
-### `metaQuery($callback)`
+#### `metaQuery($callback)`
 
 The `metaQuery($callback)` method allows you to define a complex meta query using the `MetaQuery` class. You can pass a callback function to create the meta query conditions. For example:
 
@@ -1321,15 +1350,15 @@ new WP_Query([
 ]);
 ```
 
-### meta($key)
+#### meta($key)
 
 The `meta($key)` method within the `MetaQuery` class allows you to specify the custom field key you want to query. For example:
 
-### Comparison Methods
+#### Comparison Methods
 
 The `MetaQuery` class offers several methods to specify the comparison operations to perform on custom fields. You can chain these methods to build complex conditions.
 
-#### ofType($type)
+##### ofType($type)
 
 This method allows you to specify the type of comparison to use. Possible types are class constants such as `MetaQueryBuilder::NUMERIC`, `MetaQueryBuilder::CHAR`, `MetaQueryBuilder::DATE`, etc. By default, the type is automatically determined based on the value provided during comparison.
 
@@ -1339,7 +1368,7 @@ Example of usage:
 $query->meta('my_post_meta')->ofType('numeric'); // You can also use a number
 ```
 
-##### Note :
+###### Note :
 
 The `detectValueType` method is used internally to automatically determine the data type of the value provided during comparison. It is called automatically when you use other comparison methods.
 
@@ -1357,7 +1386,7 @@ This method performs the following checks to determine the data type:
 - If the value is a string containing both date and time (e.g., '2022-01-01 12:00:00'), it uses the `DATETIME` data type.
 - If none of the above conditions apply, it defaults to the `CHAR` data type.
 
-#### equalTo($value)
+##### equalTo($value)
 
 This method specifies that the custom field must be equal to a certain value.
 
@@ -1367,7 +1396,7 @@ Example of usage:
 $query->meta('my_post_meta')->equalTo('active'); // You can also use a number
 ```
 
-#### notEqualTo(mixed $value)
+##### notEqualTo(mixed $value)
 
 This method specifies that the custom field must not be equal to a certain value.
 
@@ -1377,7 +1406,7 @@ Example of usage:
 $query->meta('my_post_meta')->notEqualTo('inactive');
 ```
 
-#### greaterThan($value)
+##### greaterThan($value)
 
 This method specifies that the custom field must be greater than a certain value.
 
@@ -1387,7 +1416,7 @@ Example of usage:
 $query->meta('my_post_meta')->greaterThan(100);
 ```
 
-#### greaterOrEqualTo($value)
+##### greaterOrEqualTo($value)
 
 This method specifies that the custom field must be greater than or equal to a certain value.
 
@@ -1397,7 +1426,7 @@ Example of usage:
 $query->meta('my_post_meta')->greaterOrEqualTo(100);
 ```
 
-#### lessThan($value)
+##### lessThan($value)
 
 This method specifies that the custom field must be less than a certain value.
 
@@ -1407,7 +1436,7 @@ Example of usage:
 $query->meta('my_post_meta')->lessThan(5);
 ```
 
-#### lessOrEqualTo($value)
+##### lessOrEqualTo($value)
 
 This method specifies that the custom field must be less than or equal to a certain value.
 
@@ -1417,7 +1446,7 @@ Example of usage:
 $query->meta('my_post_meta')->lessOrEqualTo(5);
 ```
 
-#### `between(mixed $lowerBoundary, mixed $upperBoundary): self`
+##### `between(mixed $lowerBoundary, mixed $upperBoundary): self`
 
 This method specifies that the custom field must be between two given values.
 
@@ -1427,7 +1456,7 @@ Example of usage:
 $query->meta('my_post_meta')->between('2022-01-01', '2022-12-31');
 ```
 
-#### notBetween($lowerBoundary, $upperBoundary)
+##### notBetween($lowerBoundary, $upperBoundary)
 
 This method specifies that the custom field must not be between two given values.
 
@@ -1437,7 +1466,7 @@ Example of usage:
 $query->meta('my_post_meta')->notBetween('2022-01-01', '2022-12-31');
 ```
 
-#### `like(string $value): self`
+##### `like(string $value): self`
 
 This method specifies a partial match of the custom field with a string.
 
@@ -1447,7 +1476,7 @@ Example of usage:
 $query->meta('my_post_meta')->like('keyword');
 ```
 
-#### notLike($value)
+##### notLike($value)
 
 This method specifies that the custom field must not partially match a string.
 
@@ -1457,7 +1486,7 @@ Example of usage:
 $query->meta('my_post_meta')->notLike('excluded');
 ```
 
-#### in($values)
+##### in($values)
 
 This method specifies that the custom field must match one of the values in a given array.
 
@@ -1467,7 +1496,7 @@ Example of usage:
 $query->meta('my_post_meta')->in(['value1', 'value2', 'value3']);
 ```
 
-#### notIn($values)
+##### notIn($values)
 
 This method specifies that the custom field must not match any of the values in a given array.
 
@@ -1477,7 +1506,7 @@ Example of usage:
 $query->meta('my_post_meta')->notIn(['excluded1', 'excluded2']);
 ```
 
-#### state($value)
+##### state($value)
 
 The `state($value)` method within the `MetaQuery` class allows you to use the named meta queries and use this state for ordering. See [this section of the documentation](https://developer.wordpress.org/reference/classes/wp_query/#order-orderby-parameters) for more information.
 
@@ -1499,7 +1528,7 @@ PostQuery::select()
     ->get();
 ```
 
-#### exists()
+##### exists()
 
 This method specifies that the custom field must exist (be defined).
 
@@ -1509,7 +1538,7 @@ Example of usage:
 $query->meta('my_post_meta')->exists();
 ```
 
-#### notExists()
+##### notExists()
 
 This method specifies that the custom field must not exist (not be defined).
 
@@ -1519,7 +1548,7 @@ Example of usage:
 $query->meta('my_post_meta')->notExists();
 ```
 
-### `metaQuery` Method Chaining
+#### `metaQuery` Method Chaining
 
 You can chain multiple `meta()` methods to create complex meta queries. For example:
 
@@ -1538,7 +1567,7 @@ PostQuery::select()->metaQuery(function (MetaQuery $query) {
 
 This generates a meta query with an 'OR' relation between the two conditions.
 
-### Nested Meta Queries
+#### Nested Meta Queries
 
 You can create nested meta queries by using the `MetaQuery` class within the `metaQuery()` callback. This allows you to create complex meta queries with multiple levels of conditions. For example:
 
@@ -1577,11 +1606,11 @@ PostQuery::select()
     ->get();
 ```
 
-## Permission
+### Permission
 
 The `PostQuery` class allows you to query posts based on specific user permissions. You can use the following permission parameters to filter posts based on their accessibility to users.
 
-### `userPermission(string $permission)`
+#### `userPermission(string $permission)`
 
 The `userPermission` method is used to filter posts based on user permissions. It accepts one parameter:
 
@@ -1590,7 +1619,7 @@ The `userPermission` method is used to filter posts based on user permissions. I
     - `'readable'`: This permission filters posts that the user can read.
     - `'editable'`: This permission filters posts that the user can edit.
 
-#### Filter posts that the user can read.
+##### Filter posts that the user can read.
 
 ```php
 PostQuery::select()
@@ -1603,11 +1632,11 @@ This method generates the following WP_Query argument:
 ```php
 new WP_Query([
     'perm' => 'readable',
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-#### Filter posts that the user can edit.
+##### Filter posts that the user can edit.
 
 ```php
 PostQuery::select()
@@ -1620,11 +1649,11 @@ This method generates the following WP_Query argument:
 ```php
 new WP_Query([
     'perm' => 'editable',
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-#### Invalid permissions
+##### Invalid permissions
 
 ```php
 PostQuery::select()
@@ -1636,21 +1665,21 @@ When an invalid permission is provided, all posts are returned in the generated 
 
 ```php
 new WP_Query([
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-## Mimetype
+### Mimetype
 
 The `PostQuery` class allows you to filter posts based on their MIME types. You can use the `postMimeType` method to specify the MIME type(s) you want to filter by.
 
-### `postMimeType(string|array $mimeTypes)`
+#### `postMimeType(string|array $mimeTypes)`
 
 The `postMimeType` method filters posts based on MIME type(s). It accepts one parameter:
 
 - `$mimeTypes` (string|array): Specifies the MIME type(s) to filter posts by. You can provide a single MIME type as a string or an array of multiple MIME types.
 
-#### Filter posts by a single MIME type (e.g., 'image/gif').
+##### Filter posts by a single MIME type (e.g., 'image/gif').
 
 ```php
 PostQuery::select()
@@ -1663,11 +1692,11 @@ This method generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post_mime_type' => 'image/gif',
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-#### Filter posts by an array of MIME types.
+##### Filter posts by an array of MIME types.
 
 ```php
 PostQuery::select()
@@ -1680,15 +1709,15 @@ This method generates the following WP_Query argument:
 ```php
 new WP_Query([
     'post_mime_type' => ['image/jpeg', 'image/gif', 'image/png', 'image/bmp', 'image/tiff', 'image/x-icon'],
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-## Cache
+### Cache
 
 The `PostQuery` class provides methods for controlling caching behavior when querying posts.
 
-### cacheResults()
+#### cacheResults()
 
 The `cacheResults` method enables caching of query results. When you use this method, the query results will be cached for faster retrieval. It doesn't accept any parameters.
 
@@ -1703,11 +1732,11 @@ This method generates the following WP_Query argument:
 ```php
 new WP_Query([
     'cache_results' => true,
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-### updateMetaCache($update)
+#### updateMetaCache($update)
 
 The `updateMetaCache` method allows you to control whether post meta data is cached. You can specify whether to update the post meta cache or not using this method.
 
@@ -1724,11 +1753,11 @@ This method generates the following WP_Query argument:
 ```php
 new WP_Query([
     'update_post_meta_cache' => false,
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
 
-### updateTermCache($update)
+#### updateTermCache($update)
 
 The `updateTermCache` method allows you to control whether post term data is cached. You can specify whether to update the post term cache or not using this method.
 
@@ -1745,6 +1774,20 @@ This method generates the following WP_Query argument:
 ```php
 new WP_Query([
     'update_post_term_cache' => true,
-    'post_type' => 'all',
+    'post_type' => 'any',
 ]);
 ```
+
+## Testing
+
+```bash
+vendor/bin/pest
+```
+
+## Contributing
+
+Contributions are welcome: see the [contributing guide](https://github.com/Pollora/.github/blob/main/CONTRIBUTING.md). Report security issues privately, as described in the [security policy](https://github.com/Pollora/.github/blob/main/SECURITY.md).
+
+## License
+
+Query is open-source software licensed under the [MIT license](LICENSE). © [RuBee group](https://rubee.group)
