@@ -12,6 +12,7 @@
 */
 
 include __DIR__.'/helpers'.DIRECTORY_SEPARATOR.'wp.php';
+include __DIR__.'/helpers'.DIRECTORY_SEPARATOR.'docs.php';
 
 // uses(Tests\TestCase::class)->in('Feature');
 

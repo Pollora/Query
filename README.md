@@ -114,7 +114,7 @@ The sub-queries are shared: [`TaxQuery`](docs/tax-query.md) (posts), [`MetaQuery
 - [Concepts](docs/concepts.md): how the builders work, defaults, errors, `where()` / `orWhere()`, raw arguments. **Start here.**
 - [Getting results](docs/results.md): `get()`, `first()`, `ids()`, `count()`, `exists()` and friends.
 - [Tax queries](docs/tax-query.md), [meta queries](docs/meta-query.md), [date queries](docs/date-query.md).
-- [Upgrading](docs/upgrading.md): what changed since 1.0.
+- [Upgrading](docs/upgrading.md): what changed since 1.0, and what to check. The full list is in the [changelog](CHANGELOG.md).
 
 ## Why use it
 
@@ -233,6 +233,15 @@ The same query as a `WP_Query` array is much harder to read and to get right.
 ```bash
 vendor/bin/pest
 ```
+
+The examples in this documentation are tests too: each one that shows the arguments a query builds, or the exception it throws, is run and compared with the output written in the page. Links between the pages and the list of documented methods are checked as well.
+
+```bash
+vendor/bin/pest --group=docs                 # only the documentation
+UPDATE_DOCS=1 vendor/bin/pest --group=docs   # rewrite the outputs after a change of behaviour, then review the diff
+```
+
+When you add a public method, mention it in the page of its class (the test lists the ones that are missing).
 
 ## Contributing
 
