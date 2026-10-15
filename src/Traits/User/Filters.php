@@ -186,8 +186,8 @@ trait Filters
     }
 
     /**
-     * Without searchColumns(), WP picks the columns from the keyword. A leading and/or trailing `*`
-     * makes it a wildcard search.
+     * Without a `*`, the keyword must match a whole value. A leading and/or trailing `*` makes it a
+     * partial match. Without searchColumns(), WP picks the columns from the keyword.
      */
     public function search(string $keyword): self
     {

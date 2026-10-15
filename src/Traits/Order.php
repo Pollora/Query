@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits;
 
+use Pollora\Query\QueryException;
+use Pollora\Query\Traits\Concerns\ValidatesChoices;
+
 trait Order
 {
+    use ValidatesChoices;
+
     /**
      * @var array<string, string>|null
      */
@@ -13,6 +18,8 @@ trait Order
 
     /**
      * @param  array<string, string>|string  $orderby  A field, or a map of field => direction.
+     *
+     * @throws QueryException If a direction is not ASC or DESC.
      */
     public function orderBy(array|string $orderby, string $order = 'DESC'): self
     {
@@ -22,7 +29,7 @@ trait Order
         unset($this->orderby['rand']);
 
         foreach ($columns as $column => $direction) {
-            $this->orderby[$column] = strtoupper($direction);
+            $this->orderby[$column] = $this->assertDirection($direction);
         }
 
         return $this;

@@ -43,7 +43,7 @@ trait Filters
     }
 
     /**
-     * Searches the domain and the path. A leading and/or trailing `*` makes it a wildcard search.
+     * Matches networks whose domain or path contains the keyword. A `*` inside the keyword is a wildcard.
      */
     public function search(string $keyword): self
     {
