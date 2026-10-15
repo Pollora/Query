@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Pollora\Query\Traits\Comments;
+namespace Pollora\Query\Traits\Concerns;
 
 use Pollora\Query\QueryException;
-use Pollora\Query\Traits\Concerns\ValidatesChoices;
 
-trait Fields
+trait SelectsIds
 {
     use ValidatesChoices;
 
     protected ?string $fields = null;
 
     /**
-     * 'ids' returns comment IDs only, 'all' (or '*') whole comments, which is WP's default.
+     * 'ids' returns IDs only, 'all' (or '*') whole objects, which is WP's default.
      *
      * @throws QueryException
      */

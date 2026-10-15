@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pollora\Query;
 
 use Pollora\Query\Traits\Comments\Caching;
-use Pollora\Query\Traits\Comments\Fields;
 use Pollora\Query\Traits\Comments\Filters;
 use Pollora\Query\Traits\Comments\Order;
 use Pollora\Query\Traits\Comments\PostFilters;
@@ -13,6 +12,7 @@ use Pollora\Query\Traits\Comments\Retrieval;
 use Pollora\Query\Traits\Concerns\BuildsArguments;
 use Pollora\Query\Traits\Concerns\LimitsResults;
 use Pollora\Query\Traits\Concerns\PagedResults;
+use Pollora\Query\Traits\Concerns\SelectsIds;
 use Pollora\Query\Traits\DateQuery;
 use Pollora\Query\Traits\MetaField;
 use Pollora\Query\Traits\MetaQuery;
@@ -20,7 +20,7 @@ use WP_Comment_Query;
 
 class CommentQuery
 {
-    use BuildsArguments, Caching, DateQuery, Fields, Filters, LimitsResults, MetaField, MetaQuery, Order, PagedResults, PostFilters, Retrieval;
+    use BuildsArguments, Caching, DateQuery, Filters, LimitsResults, MetaField, MetaQuery, Order, PagedResults, PostFilters, Retrieval, SelectsIds;
 
     /**
      * @param  array<int>|int|null  $commentId  A comment ID, or a list of comment IDs.

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits\Comments;
 
+use Pollora\Query\Traits\Concerns\DisablesOrder;
 use Pollora\Query\Traits\Concerns\OrdersByMap;
 
 trait Order
 {
-    use OrdersByMap;
+    use DisablesOrder, OrdersByMap;
 
     public function orderByDate(string $order = 'DESC'): self
     {
@@ -39,15 +40,5 @@ trait Order
     public function oldest(): self
     {
         return $this->orderByDate('ASC');
-    }
-
-    /**
-     * Disables the ORDER BY clause.
-     */
-    public function withoutOrder(): self
-    {
-        $this->orderby = 'none';
-
-        return $this;
     }
 }

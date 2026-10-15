@@ -129,40 +129,53 @@ if (! class_exists('WP_User_Query')) {
     }
 }
 
+/**
+ * Behaviour shared by the doubles of the queries whose `query()` returns a list, or a number with `count`.
+ */
+trait WpQueryDouble
+{
+    /** @var array<array> */
+    public static array $log = [];
+
+    public static array $fakeResults = [];
+
+    public static int $fakeCount = 0;
+
+    public array $query_vars = [];
+
+    public function __construct(array $args = [])
+    {
+        if ($args !== []) {
+            $this->query($args);
+        }
+    }
+
+    public function query(array $args): array|int
+    {
+        self::$log[] = $args;
+        $this->query_vars = $args;
+
+        return ! empty($args['count']) ? self::$fakeCount : self::$fakeResults;
+    }
+}
+
 if (! class_exists('WP_Comment_Query')) {
-    /**
-     * Minimal WP_Comment_Query double: records the arguments and returns the comments set up by the test.
-     */
     class WP_Comment_Query
     {
-        /** @var array<array> */
-        public static array $log = [];
+        use WpQueryDouble;
+    }
+}
 
-        public static mixed $fakeComments = [];
+if (! class_exists('WP_Site_Query')) {
+    class WP_Site_Query
+    {
+        use WpQueryDouble;
+    }
+}
 
-        public static int $fakeCount = 0;
-
-        public array $query_vars = [];
-
-        public array $comments = [];
-
-        public function __construct(array $args = [])
-        {
-            if ($args !== []) {
-                $this->query($args);
-            }
-        }
-
-        public function query(array $args): array|int
-        {
-            self::$log[] = $args;
-            $this->query_vars = $args;
-
-            if (! empty($args['count'])) {
-                return self::$fakeCount;
-            }
-
-            return $this->comments = self::$fakeComments;
-        }
+if (! class_exists('WP_Network_Query')) {
+    class WP_Network_Query
+    {
+        use WpQueryDouble;
     }
 }
