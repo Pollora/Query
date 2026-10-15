@@ -21,7 +21,10 @@ jobs:
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Tests
-        run: ./vendor/bin/pest
+        run: ./vendor/bin/pest --exclude-group=docs
+
+      - name: Documentation examples
+        run: ./vendor/bin/pest --group=docs
 
       - name: Pint
         run: ./vendor/bin/pint
