@@ -135,6 +135,19 @@ class TaxQueryBuilder extends SubQuery
     }
 
     /**
+     * Sets the terms to be used in the query and sets the operator to "AND": every term must match.
+     *
+     * @param  array<string|int>  $terms
+     */
+    public function containsAll(array $terms): self
+    {
+        $this->terms = $terms;
+        $this->operator = 'AND';
+
+        return $this;
+    }
+
+    /**
      * Sets the terms to exclude from the search.
      *
      * @param  array<string|int>  $terms The terms to exclude.

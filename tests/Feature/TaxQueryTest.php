@@ -171,3 +171,11 @@ test('TaxQuery: no builder state leaks into the arguments', function () {
 
     expect($args)->not->toHaveKeys(['query_builder', 'query_type']);
 });
+
+test('TaxQuery: containsAll uses the AND operator', function () {
+    $args = PostQuery::select()
+        ->taxQuery(fn (TaxQuery $q) => $q->where($q->taxonomy('genre')->containsAll([1, 2])))
+        ->getArguments();
+
+    expect($args['tax_query'][0])->toMatchArray(['operator' => 'AND', 'terms' => [1, 2]]);
+});

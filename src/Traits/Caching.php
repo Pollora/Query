@@ -12,6 +12,12 @@ trait Caching
 
     protected ?bool $updatePostTermCache = null;
 
+    protected ?bool $lazyLoadTermMeta = null;
+
+    protected ?bool $noFoundRows = null;
+
+    protected ?bool $suppressFilters = null;
+
     public function cacheResults(bool $value = true): self
     {
         $this->cacheResults = $value;
@@ -29,6 +35,30 @@ trait Caching
     public function updateTermCache(bool $value = true): self
     {
         $this->updatePostTermCache = $value;
+
+        return $this;
+    }
+
+    public function lazyLoadTermMeta(bool $value = true): self
+    {
+        $this->lazyLoadTermMeta = $value;
+
+        return $this;
+    }
+
+    /**
+     * Skips counting the total rows, faster when pagination is not needed.
+     */
+    public function noFoundRows(bool $value = true): self
+    {
+        $this->noFoundRows = $value;
+
+        return $this;
+    }
+
+    public function suppressFilters(bool $value = true): self
+    {
+        $this->suppressFilters = $value;
 
         return $this;
     }

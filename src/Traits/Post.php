@@ -14,6 +14,14 @@ trait Post
 
     protected ?int $postParent = null;
 
+    protected ?int $pageId = null;
+
+    protected ?string $pagename = null;
+
+    protected ?string $title = null;
+
+    protected ?int $menuOrder = null;
+
     /**
      * @var array<int>|null
      */
@@ -49,6 +57,40 @@ trait Post
     public function postSlug(string $postName): self
     {
         $this->name = $postName;
+
+        return $this;
+    }
+
+    public function pageId(int $pageId): self
+    {
+        $this->pageId = $pageId;
+
+        return $this;
+    }
+
+    /**
+     * Page slug, hierarchical paths such as `parent/child` are supported by WP.
+     */
+    public function pagename(string $pagename): self
+    {
+        $this->pagename = $pagename;
+
+        return $this;
+    }
+
+    /**
+     * Exact post title.
+     */
+    public function title(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function menuOrder(int $menuOrder): self
+    {
+        $this->menuOrder = $menuOrder;
 
         return $this;
     }

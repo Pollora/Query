@@ -1778,6 +1778,24 @@ new WP_Query([
 ]);
 ```
 
+### Additional parameters
+
+```php
+PostQuery::select()
+    ->pageId(7)->pagename('parent/child')->title('Hello')->menuOrder(3)   // page_id, pagename, title, menu_order
+    ->year(2024)->month(3)->day(5)->hour(14)->minute(30)->second(0)       // year, monthnum, day, hour, minute, second
+    ->yearMonth(202403)->week(12)                                          // m, w
+    ->exactSearch()->searchSentence()->searchColumns(['post_title'])       // exact, sentence, search_columns
+    ->metaKey('color')->metaValue('red')->metaCompare('!=')->metaType('CHAR') // top-level meta_* parameters
+    ->orderByMeta('price', 'DESC', numeric: true)                          // meta_key + orderby meta_value_num
+    ->noFoundRows()->suppressFilters()->lazyLoadTermMeta(false)            // no_found_rows, suppress_filters, lazy_load_term_meta
+    ->get();
+```
+
+`metaCompareKey()` and `metaTypeKey()` map to `meta_compare_key` and `meta_type_key`. As in WP, `orderByMeta()` also restricts the results to posts that have the key.
+
+Inside a meta query, `regexp()`, `notRegexp()` and `rlike()` add the matching operators, and `keyCompare('LIKE')` / `keyType('CHAR')` compare the meta key itself (`compare_key`, `type_key`). For taxonomies, `containsAll([1, 2])` requires every term (`operator => 'AND'`).
+
 ## Testing
 
 ```bash

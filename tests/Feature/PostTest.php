@@ -104,3 +104,11 @@ test('Post: post_type defaults to any so that no type is filtered out', function
     expect(PostQuery::select()->getArguments()['post_type'])->toBe('any')
         ->and(PostQuery::find(5)->getArguments()['post_type'])->toBe('any');
 });
+
+test('Post: page_id, pagename, title and menu_order', function () {
+    $args = PostQuery::select()
+        ->pageId(7)->pagename('parent/child')->title('Hello')->menuOrder(3)
+        ->getArguments();
+
+    expect($args)->toMatchArray(['page_id' => 7, 'pagename' => 'parent/child', 'title' => 'Hello', 'menu_order' => 3]);
+});

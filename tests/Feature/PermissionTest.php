@@ -1,6 +1,7 @@
 <?php
 
 use Pollora\Query\PostQuery;
+use Pollora\Query\QueryException;
 
 test('Permission: readable', function () {
     $args = PostQuery::select()
@@ -23,11 +24,5 @@ test('Permission: editable', function () {
 });
 
 test('Permission: invalid', function () {
-    $args = PostQuery::select()
-        ->userPermission('invalid')
-        ->getArguments();
-
-    expect($args)->toMatchArray([
-        'fields' => 'all',
-    ]);
-});
+    PostQuery::select()->userPermission('invalid');
+})->throws(QueryException::class, 'Invalid permission supplied: invalid');

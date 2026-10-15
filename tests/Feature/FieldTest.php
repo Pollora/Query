@@ -1,6 +1,7 @@
 <?php
 
 use Pollora\Query\PostQuery;
+use Pollora\Query\QueryException;
 
 test('Field: ids', function () {
     $args = PostQuery::find(1)
@@ -23,3 +24,11 @@ test('Field: wildcard', function () {
         'fields' => 'all',
     ]);
 });
+
+test('Field: id=>parent', function () {
+    expect(PostQuery::select('id=>parent')->getArguments()['fields'])->toBe('id=>parent');
+});
+
+test('Field: invalid', function () {
+    PostQuery::select('bogus');
+})->throws(QueryException::class, 'Invalid fields value supplied: bogus');
