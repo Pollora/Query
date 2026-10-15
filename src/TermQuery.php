@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Pollora\Query;
 
+use Pollora\Query\Traits\Concerns\BuildsArguments;
+use Pollora\Query\Traits\Concerns\LimitsResults;
 use Pollora\Query\Traits\MetaField;
 use Pollora\Query\Traits\MetaQuery;
 use Pollora\Query\Traits\Term\Caching;
 use Pollora\Query\Traits\Term\Fields;
 use Pollora\Query\Traits\Term\Filters;
 use Pollora\Query\Traits\Term\Hierarchy;
-use Pollora\Query\Traits\Term\Limit;
 use Pollora\Query\Traits\Term\Order;
 use Pollora\Query\Traits\Term\Retrieval;
-use Pollora\WordPressArgs\ArgumentHelper;
 use WP_Term_Query;
 
 class TermQuery
 {
-    use ArgumentHelper, Caching, Fields, Filters, Hierarchy, Limit, MetaField, MetaQuery, Order, Retrieval;
+    use BuildsArguments, Caching, Fields, Filters, Hierarchy, LimitsResults, MetaField, MetaQuery, Order, Retrieval;
 
     /**
      * @param  array<int>|int|null  $termId  A term ID, or a list of term IDs.
@@ -47,17 +47,6 @@ class TermQuery
     public static function select(?string $fields = 'all'): self
     {
         return new static(null, $fields);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getArguments(): array
-    {
-        $args = $this->buildArguments();
-        unset($args['query_type']);
-
-        return $args;
     }
 
     public function get(): WP_Term_Query

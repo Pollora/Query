@@ -19,38 +19,19 @@ use Pollora\Query\QueryException;
  */
 class TaxQueryBuilder extends SubQuery
 {
-    /**
-     * Constant representing the search term "term_taxonomy_id".
-     *
-     * Usage:
-     * This constant can be used when performing a search operation
-     * to specify that the search should be based on the term's taxonomy ID.
-     *
-     * Example:
-     * $searchBy = SEARCH_BY_TERM_TAX_ID;
-     * $termTaxonomyId = 10;
-     * $results = performSearch($searchBy, $termTaxonomyId);
-     */
+    /** Match the terms by their slug. */
     final public const SEARCH_BY_SLUG = 'slug';
 
-    /**
-     * Constant representing the search term 'term_taxonomy_id'.
-     */
+    /** Match the terms by their name. */
     final public const SEARCH_BY_NAME = 'name';
 
-    /**
-     * Constant that represents the search parameter name for searching by term taxonomy ID.
-     */
+    /** Match the terms by their term_taxonomy_id. */
     final public const SEARCH_BY_TERM_TAX_ID = 'term_taxonomy_id';
 
-    /**
-     * This constant defines the term taxonomy ID for searching.
-     */
+    /** Match the terms by their term_id (default). */
     final public const SEARCH_BY_ID = 'term_id';
 
-    /**
-     * Defines the constant SEARCH_BY_TERM_TAX_ID and its value 'term_taxonomy_id'.
-     */
+    /** The field the terms are matched on. */
     private string $field = 'term_id';
 
     /**

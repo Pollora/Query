@@ -14,14 +14,12 @@ trait DateQuery
      */
     protected ?array $dateQuery = null;
 
-    use SubQueryTrait {
-        SubQueryTrait::query as genericQuery;
-    }
+    use SubQueryTrait;
 
     public function dateQuery(callable|SubQuery $callback): self
     {
-        $this->initQuery('date');
+        $this->addSubQuery('date', $callback);
 
-        return $this->genericQuery($callback);
+        return $this;
     }
 }

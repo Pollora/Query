@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Pollora\Query\Traits;
 
 use Pollora\Query\QueryException;
+use Pollora\Query\Traits\Concerns\ValidatesChoices;
 
 trait Permission
 {
+    use ValidatesChoices;
+
     protected ?string $perm = null;
 
     /**
@@ -15,17 +18,8 @@ trait Permission
      */
     public function userPermission(string $value): self
     {
-        if (! $this->isValidPermission($value)) {
-            throw new QueryException('Invalid permission supplied: '.$value);
-        }
-
-        $this->perm = $value;
+        $this->perm = $this->assertOneOf($value, ['readable', 'editable'], 'permission');
 
         return $this;
-    }
-
-    protected function isValidPermission(string $value): bool
-    {
-        return in_array($value, ['readable', 'editable'], true);
     }
 }

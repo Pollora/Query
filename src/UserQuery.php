@@ -4,21 +4,22 @@ declare(strict_types=1);
 
 namespace Pollora\Query;
 
+use Pollora\Query\Traits\Concerns\BuildsArguments;
+use Pollora\Query\Traits\Concerns\LimitsResults;
+use Pollora\Query\Traits\Concerns\PagedResults;
 use Pollora\Query\Traits\DateQuery;
 use Pollora\Query\Traits\MetaField;
 use Pollora\Query\Traits\MetaQuery;
 use Pollora\Query\Traits\User\Fields;
 use Pollora\Query\Traits\User\Filters;
-use Pollora\Query\Traits\User\Limit;
 use Pollora\Query\Traits\User\Order;
 use Pollora\Query\Traits\User\Performance;
 use Pollora\Query\Traits\User\Retrieval;
-use Pollora\WordPressArgs\ArgumentHelper;
 use WP_User_Query;
 
 class UserQuery
 {
-    use ArgumentHelper, DateQuery, Fields, Filters, Limit, MetaField, MetaQuery, Order, Performance, Retrieval;
+    use BuildsArguments, DateQuery, Fields, Filters, LimitsResults, MetaField, MetaQuery, Order, PagedResults, Performance, Retrieval;
 
     /**
      * @param  array<int>|int|null  $userId  A user ID, or a list of user IDs.
@@ -51,17 +52,6 @@ class UserQuery
     public static function select(string|array|null $fields = 'all'): self
     {
         return new static(null, $fields);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public function getArguments(): array
-    {
-        $args = $this->buildArguments();
-        unset($args['query_type']);
-
-        return $args;
     }
 
     public function get(): WP_User_Query

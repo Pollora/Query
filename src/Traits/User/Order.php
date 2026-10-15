@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Pollora\Query\Traits\User;
 
 use Pollora\Query\QueryException;
+use Pollora\Query\Traits\Concerns\ValidatesChoices;
 
 trait Order
 {
+    use ValidatesChoices;
+
     /**
      * @var array<string, string>|null
      */
@@ -27,13 +30,7 @@ trait Order
         $columns = is_array($field) ? $field : [$field => $order];
 
         foreach ($columns as $column => $direction) {
-            $direction = strtoupper($direction);
-
-            if (! in_array($direction, ['ASC', 'DESC'], true)) {
-                throw new QueryException('Invalid order direction supplied: '.$direction);
-            }
-
-            $this->orderby[$column] = $direction;
+            $this->orderby[$column] = $this->assertDirection($direction);
         }
 
         return $this;

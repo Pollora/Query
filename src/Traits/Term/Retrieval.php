@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits\Term;
 
+use Pollora\Query\Traits\Concerns\CopiesBuilder;
 use WP_Term_Query;
 
 /**
@@ -13,6 +14,8 @@ use WP_Term_Query;
  */
 trait Retrieval
 {
+    use CopiesBuilder;
+
     /**
      * The first matching term (a WP_Term), or null. With `fields()` set, the first value of that kind.
      */
@@ -88,17 +91,6 @@ trait Retrieval
         $query = new WP_Term_Query($this->copyWith($configure));
 
         return is_array($query->terms) ? $query->terms : [];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function copyWith(callable $configure): array
-    {
-        $copy = clone $this;
-        $configure($copy);
-
-        return $copy->getArguments();
     }
 
     private function guardCountField(): void

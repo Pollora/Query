@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Pollora\Query\Traits;
 
 use Pollora\Query\QueryException;
+use Pollora\Query\Traits\Concerns\ValidatesChoices;
 
 trait Field
 {
+    use ValidatesChoices;
+
     protected string $fields = 'all';
 
     /**
@@ -15,13 +18,9 @@ trait Field
      */
     public function fields(string $value): self
     {
-        if ($value === '*') {
-            $this->fields = 'all';
-        } elseif (in_array($value, ['all', 'ids', 'id=>parent'], true)) {
-            $this->fields = $value;
-        } else {
-            throw new QueryException('Invalid fields value supplied: '.$value);
-        }
+        $this->fields = $value === '*'
+            ? 'all'
+            : $this->assertOneOf($value, ['all', 'ids', 'id=>parent'], 'fields value');
 
         return $this;
     }

@@ -1,6 +1,7 @@
 <?php
 
 use Pollora\Query\PostQuery;
+use Pollora\Query\Query;
 use Pollora\Query\TaxQuery;
 
 test('TaxQuery: tax_query (simple)', function () {
@@ -178,4 +179,12 @@ test('TaxQuery: containsAll uses the AND operator', function () {
         ->getArguments();
 
     expect($args['tax_query'][0])->toMatchArray(['operator' => 'AND', 'terms' => [1, 2]]);
+});
+
+test('TaxQuery: Query::tax builds a clause like the closure builder', function () {
+    $args = PostQuery::select()
+        ->taxQuery(Query::tax('genre')->searchByTermSlug()->contains(['jazz']))
+        ->getArguments();
+
+    expect($args['tax_query'][0])->toMatchArray(['taxonomy' => 'genre', 'field' => 'slug', 'terms' => ['jazz'], 'operator' => 'IN']);
 });
