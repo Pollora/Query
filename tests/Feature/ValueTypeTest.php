@@ -1,20 +1,24 @@
 <?php
 
+use Pollora\Query\Utils\Types\BooleanType;
+use Pollora\Query\Utils\Types\CharType;
+use Pollora\Query\Utils\Types\DatetimeType;
+use Pollora\Query\Utils\Types\NumberType;
 use Pollora\Query\Utils\ValueTypeDetector;
 
 $dataProvider = [
-    ['value' => null, 'expected' => \Pollora\Query\Utils\Types\CharType::CHAR, 'message' => 'with null value'],
-    ['value' => -5, 'expected' => \Pollora\Query\Utils\Types\NumberType::SIGNED, 'message' => 'with negative integer value'],
-    ['value' => 5, 'expected' => \Pollora\Query\Utils\Types\NumberType::UNSIGNED, 'message' => 'with positive integer value'],
-    ['value' => 0, 'expected' => \Pollora\Query\Utils\Types\BooleanType::BINARY, 'message' => 'with negative binary value'],
-    ['value' => 1, 'expected' => \Pollora\Query\Utils\Types\BooleanType::BINARY, 'message' => 'with positive binary value'],
-    ['value' => 5.5, 'expected' => \Pollora\Query\Utils\Types\NumberType::DECIMAL, 'message' => 'with float value'],
-    ['value' => '5', 'expected' => \Pollora\Query\Utils\Types\NumberType::NUMERIC, 'message' => 'with numeric string value'],
-    ['value' => '2021-01-01', 'expected' => \Pollora\Query\Utils\Types\DatetimeType::DATE, 'message' => 'with date value'],
-    ['value' => '12:34:56', 'expected' => \Pollora\Query\Utils\Types\DatetimeType::TIME, 'message' => 'with time value'],
-    ['value' => '2021-01-01 12:34:56', 'expected' => \Pollora\Query\Utils\Types\DatetimeType::DATETIME, 'message' => 'with datetime value'],
-    ['value' => 'SomeString', 'expected' => \Pollora\Query\Utils\Types\CharType::CHAR, 'message' => 'with other string value'],
-    ['value' => 'SomeString', 'type' => 'DATETIME', 'expected' => \Pollora\Query\Utils\Types\DatetimeType::DATETIME, 'message' => 'with forced type'],
+    ['value' => null, 'expected' => CharType::CHAR, 'message' => 'with null value'],
+    ['value' => -5, 'expected' => NumberType::SIGNED, 'message' => 'with negative integer value'],
+    ['value' => 5, 'expected' => NumberType::UNSIGNED, 'message' => 'with positive integer value'],
+    ['value' => 0, 'expected' => BooleanType::BINARY, 'message' => 'with negative binary value'],
+    ['value' => 1, 'expected' => BooleanType::BINARY, 'message' => 'with positive binary value'],
+    ['value' => 5.5, 'expected' => NumberType::DECIMAL, 'message' => 'with float value'],
+    ['value' => '5', 'expected' => NumberType::NUMERIC, 'message' => 'with numeric string value'],
+    ['value' => '2021-01-01', 'expected' => DatetimeType::DATE, 'message' => 'with date value'],
+    ['value' => '12:34:56', 'expected' => DatetimeType::TIME, 'message' => 'with time value'],
+    ['value' => '2021-01-01 12:34:56', 'expected' => DatetimeType::DATETIME, 'message' => 'with datetime value'],
+    ['value' => 'SomeString', 'expected' => CharType::CHAR, 'message' => 'with other string value'],
+    ['value' => 'SomeString', 'type' => 'DATETIME', 'expected' => DatetimeType::DATETIME, 'message' => 'with forced type'],
 ];
 
 foreach ($dataProvider as $data) {

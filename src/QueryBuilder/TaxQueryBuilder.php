@@ -45,15 +45,15 @@ class TaxQueryBuilder extends SubQuery
     private bool $includeChildren = true;
 
     /**
-     * @var array<string>|null
-     * Variable that stores an array of terms used for searching.
+     * The terms the query looks for.
+     *
+     * @var array<string|int>|null
      */
     private ?array $terms = null;
 
     public function __construct(
         private readonly string $taxonomy
-    ) {
-    }
+    ) {}
 
     /**
      * Sets the operator to "NOT EXISTS".
@@ -82,7 +82,7 @@ class TaxQueryBuilder extends SubQuery
     /**
      * Sets the field to be used in the query.
      *
-     * @param  string  $field The field to be used in the query.
+     * @param  string  $field  The field to be used in the query.
      * @return self Returns the current instance of the object.
      *
      * @throws QueryException If an invalid tax field type is supplied.
@@ -104,7 +104,7 @@ class TaxQueryBuilder extends SubQuery
     /**
      * Sets the terms to be used in the query and sets the operator to "IN".
      *
-     * @param  array<string|int>  $terms The terms to be used in the query.
+     * @param  array<string|int>  $terms  The terms to be used in the query.
      * @return self Returns the current instance of the object.
      */
     public function contains(array $terms): self
@@ -131,7 +131,7 @@ class TaxQueryBuilder extends SubQuery
     /**
      * Sets the terms to exclude from the search.
      *
-     * @param  array<string|int>  $terms The terms to exclude.
+     * @param  array<string|int>  $terms  The terms to exclude.
      */
     public function notContains(array $terms): self
     {
