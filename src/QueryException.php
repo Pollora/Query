@@ -6,6 +6,4 @@ namespace Pollora\Query;
 
 use Exception;
 
-class QueryException extends Exception
-{
-}
+class QueryException extends Exception {}

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * Parses a string into variables to be stored in an array.
  *
  * @since 2.2.1
  *
- * @param  string  $input_string The string to be parsed.
- * @param  array  $result       Variables will be stored in this array.
+ * @param  string  $input_string  The string to be parsed.
+ * @param  array  $result  Variables will be stored in this array.
  */
 function wp_parse_str(string $input_string, array &$result): void
 {
@@ -21,9 +22,9 @@ function wp_parse_str(string $input_string, array &$result): void
  * @since 2.2.0
  * @since 2.3.0 `$args` can now also be an object.
  *
- * @param  string|array|object  $args     Value to merge with $defaults.
- * @param  array  $defaults Optional. Array that serves as the defaults.
- *                                      Default empty array.
+ * @param  string|array|object  $args  Value to merge with $defaults.
+ * @param  array  $defaults  Optional. Array that serves as the defaults.
+ *                           Default empty array.
  * @return array Merged user defined values with defaults.
  */
 function wp_parse_args(string|array|object $args, array $defaults = []): array
