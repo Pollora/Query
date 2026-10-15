@@ -4,7 +4,7 @@ All notable changes to this package are documented here. The format follows [Kee
 
 Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github.com/Pollora/Query/releases).
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2026-10-15
 
 A major release: Query now covers every query class of WordPress, and several arguments that were wrong or silently ignored are fixed. A few fixes change the results of a query that used to run, so read **[Upgrading](docs/upgrading.md)** before updating.
 
@@ -43,4 +43,4 @@ A major release: Query now covers every query class of WordPress, and several ar
 
 - The public `initQuery()`, `query()` and `genericQuery()` methods of the query classes. They came from an internal trait by accident and were not documented.
 
-[2.0.0]: https://github.com/Pollora/Query/compare/1.0.3...HEAD
+[2.0.0]: https://github.com/Pollora/Query/compare/1.0.3...2.0.0
