@@ -71,3 +71,27 @@ if (! class_exists('WP_Query')) {
         }
     }
 }
+
+if (! class_exists('WP_Term_Query')) {
+    /**
+     * Minimal WP_Term_Query double: records the arguments and exposes the terms set up by the test.
+     */
+    class WP_Term_Query
+    {
+        /** @var array<array> */
+        public static array $log = [];
+
+        public static mixed $fakeTerms = [];
+
+        public array $query_vars;
+
+        public mixed $terms;
+
+        public function __construct(array $args = [])
+        {
+            self::$log[] = $args;
+            $this->query_vars = $args;
+            $this->terms = self::$fakeTerms;
+        }
+    }
+}
