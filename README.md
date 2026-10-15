@@ -1778,6 +1778,19 @@ new WP_Query([
 ]);
 ```
 
+### Retrieving results
+
+`get()` returns the `WP_Query`. For the common cases, terminal methods run the query with the arguments that fit their purpose:
+
+```php
+PostQuery::select()->postType('page')->first();      // first post or null (posts_per_page 1, no_found_rows)
+PostQuery::select()->postType('page')->limit(20)->ids(); // array of IDs (fields ids, no_found_rows)
+PostQuery::select()->postType('page')->count();      // total matches, whatever the limit or page
+PostQuery::select()->postType('page')->exists();     // bool
+```
+
+They work on a copy, so the builder can be reused afterwards. `first()`, `count()` and `exists()` reset `nopaging`, `offset`, `paged` and `page`; `ids()` honours them. As with `get()`, WP's own `posts_per_page` default applies when no limit is set, so call `limit()` or `noPaging()` if you need every ID.
+
 ### Additional parameters
 
 ```php

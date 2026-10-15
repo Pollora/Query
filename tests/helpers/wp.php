@@ -42,3 +42,32 @@ function wp_parse_args(string|array|object $args, array $defaults = []): array
 
     return $parsed_args;
 }
+
+if (! class_exists('WP_Query')) {
+    /**
+     * Minimal WP_Query double: records the arguments and returns the posts set up by the test.
+     */
+    class WP_Query
+    {
+        /** @var array<array> */
+        public static array $log = [];
+
+        public static array $fakePosts = [];
+
+        public static int $fakeFound = 0;
+
+        public array $query_vars;
+
+        public array $posts;
+
+        public int $found_posts;
+
+        public function __construct(array $args = [])
+        {
+            self::$log[] = $args;
+            $this->query_vars = $args;
+            $this->posts = self::$fakePosts;
+            $this->found_posts = self::$fakeFound;
+        }
+    }
+}
