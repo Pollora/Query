@@ -50,11 +50,21 @@ class DateQuery extends QueryBuilder
                 continue;
             }
 
-            $query[$key] = isset($clause['column'])
+            $query[$key] = $this->isClause($clause)
                 ? $clause + ['inclusive' => true]
                 : $this->applyInclusive($clause);
         }
 
         return $query;
+    }
+
+    /**
+     * A first-order clause holds time keys, as opposed to a group of clauses.
+     *
+     * @param  array<array|string>  $clause
+     */
+    private function isClause(array $clause): bool
+    {
+        return array_intersect(['before', 'after', ...DateQueryBuilder::ALLOWED_KEYS], array_keys($clause)) !== [];
     }
 }

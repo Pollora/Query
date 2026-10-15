@@ -40,15 +40,20 @@ class DateQueryBuilder extends SubQuery
 
     final public const POST_MODIFIED = 'post_modified';
 
+    final public const USER_REGISTERED = 'user_registered';
+
     final public const ALLOWED_KEYS = ['year', 'month', 'day', 'hour', 'minute', 'second'];
 
-    private string $column;
+    private ?string $column;
 
     private bool $inclusive = false;
 
-    public function __construct(?string $column = self::POST_CREATED)
+    /**
+     * Without a column, WP picks the one of the queried table (post_date, user_registered, comment_date).
+     */
+    public function __construct(?string $column = null)
     {
-        $this->column = $column ?? self::POST_CREATED;
+        $this->column = $column;
     }
 
     public function created(): self
@@ -64,6 +69,13 @@ class DateQueryBuilder extends SubQuery
     public function inclusive(bool $inclusive = true): self
     {
         $this->inclusive = $inclusive;
+
+        return $this;
+    }
+
+    public function registered(): self
+    {
+        $this->column = self::USER_REGISTERED;
 
         return $this;
     }
@@ -209,6 +221,10 @@ class DateQueryBuilder extends SubQuery
     public function get(): array
     {
         $clause = $this->buildClause();
+
+        if ($this->column === null) {
+            unset($clause['column']);
+        }
 
         return $this->inclusive ? $clause + ['inclusive' => true] : $clause;
     }
