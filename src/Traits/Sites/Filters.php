@@ -179,7 +179,7 @@ trait Filters
     }
 
     /**
-     * A leading and/or trailing `*` makes it a wildcard search.
+     * Matches sites whose domain or path contains the keyword. A `*` inside the keyword is a wildcard.
      */
     public function search(string $keyword): self
     {
