@@ -43,11 +43,19 @@ trait Order
     }
 
     /**
-     * Keeps the order of the IDs given to whereIn().
+     * Keeps the order of the IDs given to whereIn(). WP ignores it when whereIn() is empty.
      */
     public function orderByInclude(): self
     {
         return $this->orderBy('include');
+    }
+
+    /**
+     * Keeps the order of the slugs given to slug(). WP ignores it unless slug() received an array.
+     */
+    public function orderBySlugIn(): self
+    {
+        return $this->orderBy('slug__in');
     }
 
     public function withoutOrder(): self

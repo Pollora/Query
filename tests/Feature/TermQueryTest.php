@@ -72,6 +72,7 @@ test('TermQuery: order is a single field with a direction', function () {
         ->and(TermQuery::select()->orderByName()->getArguments())->toMatchArray(['orderby' => 'name', 'order' => 'ASC'])
         ->and(TermQuery::select()->orderByCount()->getArguments())->toMatchArray(['orderby' => 'count', 'order' => 'DESC'])
         ->and(TermQuery::select()->orderByInclude()->getArguments()['orderby'])->toBe('include')
+        ->and(TermQuery::select()->orderBySlugIn()->getArguments()['orderby'])->toBe('slug__in')
         ->and(TermQuery::select()->withoutOrder()->getArguments()['orderby'])->toBe('none');
 });
 

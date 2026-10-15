@@ -59,6 +59,8 @@ trait Filters
     protected bool $hideEmpty = false;
 
     /**
+     * Without a taxonomy, WP queries every taxonomy.
+     *
      * @param  string|array<string>  $taxonomy
      */
     public function taxonomy(string|array $taxonomy): self

@@ -1827,12 +1827,14 @@ TermQuery::select()
 
 - **Selection**: `taxonomy()`, `objectIds()`, `whereIn()` (`include`), `whereNotIn()` (`exclude`), `excludeTree()`, `name()`, `slug()`, `termTaxonomyId()`, `search()`, `nameLike()`, `descriptionLike()`. `TermQuery::find(5)` or `find([1, 2])` is `include`.
 - **Hierarchy**: `childOf()`, `parentId()`, `rootOnly()`, `childless()`, `hierarchical()`, `padCounts()`, `unrestricted()` (`get => all`).
-- **Order**: `orderBy($field, $direction)`, `orderByName()`, `orderByCount()`, `orderByInclude()`, `withoutOrder()`, `orderByMeta()`. `WP_Term_Query` sorts by one field only, so there is no array form as in `PostQuery`.
+- **Order**: `orderBy($field, $direction)`, `orderByName()`, `orderByCount()`, `orderByInclude()`, `orderBySlugIn()`, `withoutOrder()`, `orderByMeta()`. `WP_Term_Query` sorts by one field only, so there is no array form as in `PostQuery`.
 - **Limit**: `limit()` / `take()` (`number`), `offset()` / `skip()`.
 - **Fields**: `select('ids')` or `fields()` accept `all`, `all_with_object_id`, `ids`, `tt_ids`, `names`, `slugs`, `count`, `id=>parent`, `id=>name`, `id=>slug`; anything else throws a `QueryException`.
 - **Meta**: `metaKey()`, `metaValue()`, `metaCompare()`, `metaType()` (+ `_key` variants) and `metaQuery()` work as for posts.
 - **Cache**: `cacheResults()`, `updateMetaCache()` (`update_term_meta_cache`), `cacheDomain()`.
 - **Results**: `get()` returns the `WP_Term_Query`; `first()`, `ids()`, `names()`, `slugs()`, `count()` and `exists()` run it on a copy of the builder.
+
+> WP applies a few overrides that the builder does not hide: `unrestricted()` ignores `childOf()`, `childless()`, `hideEmpty()`, `hierarchical()` and `padCounts()`; a non-zero `parentId()` ignores `childOf()`; without `taxonomy()` every taxonomy is queried.
 
 > **Empty terms are returned by default** (`hide_empty => false`), whereas WP hides them. As with `post_type => 'any'` for posts, no constraint is applied unless you ask for one: call `hideEmpty()` to get WP's behaviour.
 

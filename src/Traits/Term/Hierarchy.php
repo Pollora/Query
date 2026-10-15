@@ -40,6 +40,7 @@ trait Hierarchy
 
     /**
      * Returns terms regardless of their ancestry or of whether they are empty (`get => all`).
+     * WP then ignores childOf(), childless(), hideEmpty(), hierarchical() and padCounts().
      */
     public function unrestricted(): self
     {
@@ -59,7 +60,7 @@ trait Hierarchy
     }
 
     /**
-     * The direct children of the term.
+     * The direct children of the term. For a non-zero ID, WP then ignores childOf().
      */
     public function parentId(int $termId): self
     {
