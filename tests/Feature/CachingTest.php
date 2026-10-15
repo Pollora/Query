@@ -31,3 +31,9 @@ test('Caching: update_post_term_cache=>true', function () {
         'update_post_term_cache' => true,
     ]);
 });
+
+test('Caching: lazy_load_term_meta, no_found_rows and suppress_filters', function () {
+    $args = PostQuery::select()->lazyLoadTermMeta(false)->noFoundRows()->suppressFilters()->getArguments();
+
+    expect($args)->toMatchArray(['lazy_load_term_meta' => false, 'no_found_rows' => true, 'suppress_filters' => true]);
+});

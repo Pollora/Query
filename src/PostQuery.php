@@ -10,11 +10,13 @@ use Pollora\Query\Traits\Category;
 use Pollora\Query\Traits\Comment;
 use Pollora\Query\Traits\DateQuery;
 use Pollora\Query\Traits\Field;
+use Pollora\Query\Traits\MetaField;
 use Pollora\Query\Traits\MetaQuery;
 use Pollora\Query\Traits\MimeType;
 use Pollora\Query\Traits\Order;
 use Pollora\Query\Traits\Pagination;
 use Pollora\Query\Traits\Password;
+use Pollora\Query\Traits\Period;
 use Pollora\Query\Traits\Permission;
 use Pollora\Query\Traits\Post as PostTrait;
 use Pollora\Query\Traits\PostType;
@@ -27,7 +29,7 @@ use WP_Query;
 
 class PostQuery
 {
-    use ArgumentHelper, Author, Caching, Category, Comment, DateQuery, Field, MetaQuery, MimeType, Order, Pagination, Password, Permission, PostTrait, PostType, Search, Status, Tag, TaxQuery;
+    use ArgumentHelper, Author, Caching, Category, Comment, DateQuery, Field, MetaField, MetaQuery, MimeType, Order, Pagination, Password, Period, Permission, PostTrait, PostType, Search, Status, Tag, TaxQuery;
 
     public function __construct(array|int|null $postId = null, ?string $fields = null)
     {
