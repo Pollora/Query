@@ -1868,6 +1868,33 @@ UserQuery::select()
 
 The deprecated `who` parameter is not supported: use `capability()`.
 
+## CommentQuery
+
+`CommentQuery` builds `WP_Comment_Query` arguments. `metaQuery()`, `dateQuery()` and the `meta*()` methods are the same ones as on `PostQuery`.
+
+```php
+use Pollora\Query\CommentQuery;
+
+CommentQuery::select()
+    ->postId(42)
+    ->approved()
+    ->threaded()
+    ->latest()
+    ->get();                        // WP_Comment_Query
+```
+
+- **Comments**: `whereIn()` (`comment__in`), `whereNotIn()`, `authorEmail()`, `authorUrl()`, `authorIn()`, `authorNotIn()`, `userId()`, `karma()`, `search()`, `includeUnapproved()`. `CommentQuery::find(5)` or `find([1, 2])` is `comment__in`.
+- **Status and type**: `status()`, `approved()` (`approve`), `pending()` (`hold`), `type()`, `typeIn()`, `typeNotIn()`.
+- **Replies**: `parentId()`, `rootOnly()`, `parentIn()`, `parentNotIn()`, `hierarchical('threaded' | 'flat' | false)`, `threaded()`, `flat()`.
+- **Post**: `postId()`, `postIn()`, `postNotIn()`, `postAuthor()`, `postAuthorIn()`, `postAuthorNotIn()`, `postName()`, `postParent()`, `postStatus()`, `postType()`.
+- **Order**: `orderBy($field, $direction)` can be chained (fields and directions are sent as a map); `orderByDate()`, `orderByAuthor()`, `orderByInclude()`, `latest()`, `oldest()`, `withoutOrder()`, `orderByMeta()`.
+- **Limit**: `limit()` / `take()` (`number`), `offset()` / `skip()`, `paged()`.
+- **Fields**: `select('ids')` or `fields('ids')`; `'all'` (or `'*'`) is WP's default.
+- **Cache**: `noFoundRows()`, `updateMetaCache()`, `updatePostCache()`, `cacheDomain()`.
+- **Results**: `get()` returns the `WP_Comment_Query`; `first()`, `ids()`, `count()` and `exists()` run it on a copy of the builder. `count()` ignores `limit()`, `offset()` and `paged()`.
+
+> WP's default status is `all`, which is `hold` and `approve`: **spam and trash comments are left out** unless you ask for them with `status()`. `CommentQuery` does not change that. WP also skips counting the total rows by default (`no_found_rows`), call `noFoundRows(false)` if you need it.
+
 ## Testing
 
 ```bash

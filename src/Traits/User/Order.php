@@ -4,37 +4,11 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits\User;
 
-use Pollora\Query\QueryException;
-use Pollora\Query\Traits\Concerns\ValidatesChoices;
+use Pollora\Query\Traits\Concerns\OrdersByMap;
 
 trait Order
 {
-    use ValidatesChoices;
-
-    /**
-     * @var array<string, string>|null
-     */
-    protected ?array $orderby = null;
-
-    /**
-     * Fields to sort by, in call order: a user field (ID, display_name, user_login, user_nicename,
-     * user_email, user_url, user_registered, post_count...), 'include', 'login__in', 'nicename__in',
-     * 'meta_value', 'meta_value_num', a meta key or a meta query clause name.
-     *
-     * @param  array<string, string>|string  $field  A field, or a map of field => direction.
-     *
-     * @throws QueryException If a direction is not ASC or DESC.
-     */
-    public function orderBy(array|string $field, string $order = 'ASC'): self
-    {
-        $columns = is_array($field) ? $field : [$field => $order];
-
-        foreach ($columns as $column => $direction) {
-            $this->orderby[$column] = $this->assertDirection($direction);
-        }
-
-        return $this;
-    }
+    use OrdersByMap;
 
     public function orderByName(string $order = 'ASC'): self
     {
