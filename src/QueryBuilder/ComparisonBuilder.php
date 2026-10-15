@@ -8,26 +8,34 @@ use Pollora\Query\Utils\ValueTypeDetector;
 
 class ComparisonBuilder
 {
-    private ?string $type = null;
+    private readonly string $type;
 
-    public function __construct(private readonly ?string $compare, private mixed $value)
-    {
-        $this->type = (new ValueTypeDetector($value, $this->type))->detect();
+    public function __construct(
+        private readonly ?string $compare,
+        private readonly mixed $value,
+        private readonly ?string $forcedType = null,
+    ) {
+        $this->type = (new ValueTypeDetector($value, $forcedType))->detect();
     }
 
     public function withComparison(string $compare, mixed $value): self
     {
-        return new self($compare, $value, $this->type);
+        return new self($compare, $value, $this->forcedType);
+    }
+
+    public function withType(?string $type): self
+    {
+        return new self($this->compare, $this->value, $type);
     }
 
     /**
-     * @return array<string, string|int|array>
+     * @return array<string, string|int|array|null>
      */
     public function buildConfig(): array
     {
         $config = [
             'compare' => $this->compare,
-            'type' => strtoupper((string) $this->type),
+            'type' => strtoupper($this->type),
         ];
 
         if ($this->value !== null) {

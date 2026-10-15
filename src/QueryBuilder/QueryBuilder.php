@@ -50,19 +50,39 @@ class QueryBuilder
         $current = &$this->stack[$this->depth];
         $this->lastRelation[$this->depth] = $relation;
 
+        $this->applyRelation($current, $relation);
+
         if ($callback instanceof SubQuery) {
             $this->handleSubQuery($current, $callback);
         } elseif (is_callable($callback)) {
             $this->handleCallback($current, $callback);
         }
 
-        $current['relation'] = $this->lastRelation[$this->depth] ?? 'AND';
-
         return $this;
     }
 
     /**
-     * @param $current array<string, string|int|array>
+     * WP allows a single relation per level. When the relation changes on a level that already
+     * holds several clauses, they are grouped first, so that chaining reads like Eloquent:
+     * where(a)->where(b)->orWhere(c) is (a AND b) OR c.
+     *
+     * @param  array<string, string|int|array>  $current
+     */
+    private function applyRelation(array &$current, string $relation): void
+    {
+        $existing = array_diff_key($current, ['relation' => true]);
+
+        if (count($existing) > 1 && ($current['relation'] ?? 'AND') !== $relation) {
+            $current = ['relation' => $relation, ['relation' => $current['relation'] ?? 'AND'] + $existing];
+
+            return;
+        }
+
+        $current['relation'] = $relation;
+    }
+
+    /**
+     * @param  $current  array<string, string|int|array>
      */
     private function handleSubQuery(array &$current, SubQuery $subQueryInstance): void
     {
@@ -79,7 +99,7 @@ class QueryBuilder
     }
 
     /**
-     * @param $current array<string, string|int|array>
+     * @param  $current  array<string, string|int|array>
      */
     private function handleCallback(array &$current, Closure $callback): void
     {
@@ -89,10 +109,8 @@ class QueryBuilder
         $callback($this);
         $this->depth--;
 
-        $subQuery['relation'] = $this->lastRelation[$this->depth + 1] ?? 'AND';
         $current[] = $subQuery;
     }
-
 
     /**
      * @return array<array|string>

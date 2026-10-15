@@ -6,7 +6,7 @@ namespace Pollora\Query\Traits;
 
 trait PostType
 {
-    protected string $postType = 'any';
+    protected string|array $postType = 'any';
 
     public function postType(string|array $postType): self
     {

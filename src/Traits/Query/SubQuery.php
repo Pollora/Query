@@ -20,7 +20,6 @@ trait SubQuery
     public function query(callable|SubQueryAbstract $callback): self
     {
         $this->initializeQueryField();
-        $this->initializeQueryBuilder();
 
         if ($callback instanceof SubQueryAbstract) {
             $this->handleSubQueryCallback($callback);
@@ -40,12 +39,6 @@ trait SubQuery
         }
 
         $this->{$queryField} = ['relation' => 'AND'];
-    }
-
-    protected function initializeQueryBuilder(): void
-    {
-        $class = '\\Pollora\\Query\\'.ucfirst($this->queryType).'Query';
-        $this->queryBuilder[$this->queryType] = $this->queryBuilder[$this->queryType] ?? new $class();
     }
 
     protected function handleSubQueryCallback(SubQueryAbstract $callback): void
@@ -82,7 +75,17 @@ trait SubQuery
     protected function handleCallableCallback(callable $callback): void
     {
         $queryField = $this->queryType.'Query';
-        $callback($this->queryBuilder[$this->queryType]);
-        $this->{$queryField} = array_merge($this->{$queryField}, $this->queryBuilder[$this->queryType]->get());
+        $class = '\\Pollora\\Query\\'.ucfirst($this->queryType).'Query';
+
+        // A fresh builder per call: reusing one would replay earlier clauses on every call.
+        $builder = new $class;
+        $callback($builder);
+        $built = $builder->get();
+
+        if (count($built) === 1) {
+            return;
+        }
+
+        $this->{$queryField} = array_merge($this->{$queryField}, $built);
     }
 }

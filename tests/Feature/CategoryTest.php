@@ -41,3 +41,12 @@ test('Category: category__not_in', function () {
         'category__not_in' => [1, 2, 3],
     ]);
 });
+
+test('Category: category__and', function () {
+    $args = PostQuery::select()
+        ->categoryAnd([1, 2, 3])
+        ->getArguments();
+
+    expect($args)->toHaveKey('category__and', [1, 2, 3])
+        ->and($args)->not->toHaveKey('category_and');
+});
