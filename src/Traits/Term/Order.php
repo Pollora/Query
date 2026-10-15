@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Pollora\Query\Traits\Term;
 
 use Pollora\Query\QueryException;
+use Pollora\Query\Traits\Concerns\ValidatesChoices;
 
 trait Order
 {
+    use ValidatesChoices;
+
     protected ?string $orderby = null;
 
     protected ?string $order = null;
@@ -20,14 +23,8 @@ trait Order
      */
     public function orderBy(string $field, string $order = 'ASC'): self
     {
-        $order = strtoupper($order);
-
-        if (! in_array($order, ['ASC', 'DESC'], true)) {
-            throw new QueryException('Invalid order direction supplied: '.$order);
-        }
-
         $this->orderby = $field;
-        $this->order = $order;
+        $this->order = $this->assertDirection($order);
 
         return $this;
     }

@@ -8,6 +8,7 @@ use Pollora\Query\Traits\Author;
 use Pollora\Query\Traits\Caching;
 use Pollora\Query\Traits\Category;
 use Pollora\Query\Traits\Comment;
+use Pollora\Query\Traits\Concerns\BuildsArguments;
 use Pollora\Query\Traits\DateQuery;
 use Pollora\Query\Traits\Field;
 use Pollora\Query\Traits\MetaField;
@@ -25,12 +26,11 @@ use Pollora\Query\Traits\Search;
 use Pollora\Query\Traits\Status;
 use Pollora\Query\Traits\Tag;
 use Pollora\Query\Traits\TaxQuery;
-use Pollora\WordPressArgs\ArgumentHelper;
 use WP_Query;
 
 class PostQuery
 {
-    use ArgumentHelper, Author, Caching, Category, Comment, DateQuery, Field, MetaField, MetaQuery, MimeType, Order, Pagination, Password, Period, Permission, PostTrait, PostType, Retrieval, Search, Status, Tag, TaxQuery;
+    use Author, BuildsArguments, Caching, Category, Comment, DateQuery, Field, MetaField, MetaQuery, MimeType, Order, Pagination, Password, Period, Permission, PostTrait, PostType, Retrieval, Search, Status, Tag, TaxQuery;
 
     public function __construct(array|int|null $postId = null, ?string $fields = null)
     {
@@ -53,17 +53,6 @@ class PostQuery
     public static function select(?string $fields = 'all'): self
     {
         return new static(null, $fields);
-    }
-
-    /**
-     * @return array<string, string|int|array>
-     */
-    public function getArguments(): array
-    {
-        $args = $this->buildArguments();
-        unset($args['query_type']);
-
-        return $args;
     }
 
     public function get(): WP_Query

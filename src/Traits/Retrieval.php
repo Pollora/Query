@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits;
 
+use Pollora\Query\Traits\Concerns\CopiesBuilder;
 use WP_Query;
 
 /**
@@ -15,6 +16,8 @@ use WP_Query;
  */
 trait Retrieval
 {
+    use CopiesBuilder;
+
     /**
      * The first matching post (a WP_Post), or null. Returns a post ID with `fields('ids')`,
      * and a partial post object with `fields('id=>parent')`.
@@ -76,10 +79,7 @@ trait Retrieval
 
     private function runOnCopy(callable $configure): WP_Query
     {
-        $copy = clone $this;
-        $configure($copy);
-
-        return new WP_Query($copy->getArguments());
+        return new WP_Query($this->copyWith($configure));
     }
 
     private function resetPagination(): void

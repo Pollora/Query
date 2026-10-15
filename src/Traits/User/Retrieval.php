@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pollora\Query\Traits\User;
 
 use Pollora\Query\QueryException;
+use Pollora\Query\Traits\Concerns\CopiesBuilder;
 use WP_User_Query;
 
 /**
@@ -14,6 +15,8 @@ use WP_User_Query;
  */
 trait Retrieval
 {
+    use CopiesBuilder;
+
     /**
      * The first matching user (a WP_User), or null. With `fields()` set, the first value of that kind.
      */
@@ -92,16 +95,5 @@ trait Retrieval
         $query = new WP_User_Query($this->copyWith($configure));
 
         return array_values($query->get_results());
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function copyWith(callable $configure): array
-    {
-        $copy = clone $this;
-        $configure($copy);
-
-        return $copy->getArguments();
     }
 }

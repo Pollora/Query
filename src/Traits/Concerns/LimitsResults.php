@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Pollora\Query\Traits\Term;
+namespace Pollora\Query\Traits\Concerns;
 
-trait Limit
+trait LimitsResults
 {
     protected ?int $number = null;
 
     protected ?int $offset = null;
 
     /**
-     * Maximum number of terms. WP returns every term when it is not set (or 0).
+     * Maximum number of results.
      */
     public function limit(int $number): self
     {

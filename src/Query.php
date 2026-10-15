@@ -6,6 +6,7 @@ namespace Pollora\Query;
 
 use Pollora\Query\QueryBuilder\DateQueryBuilder;
 use Pollora\Query\QueryBuilder\MetaQueryBuilder;
+use Pollora\Query\QueryBuilder\TaxQueryBuilder;
 
 class Query
 {
@@ -17,5 +18,10 @@ class Query
     public static function date(string $key): DateQueryBuilder
     {
         return new DateQueryBuilder($key);
+    }
+
+    public static function tax(string $taxonomy): TaxQueryBuilder
+    {
+        return new TaxQueryBuilder($taxonomy);
     }
 }

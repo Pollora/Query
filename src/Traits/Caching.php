@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits;
 
+use Pollora\Query\Traits\Concerns\CachesResults;
+
 trait Caching
 {
-    protected ?bool $cacheResults = null;
+    use CachesResults;
 
     protected ?bool $updatePostMetaCache = null;
 
@@ -17,13 +19,6 @@ trait Caching
     protected ?bool $noFoundRows = null;
 
     protected ?bool $suppressFilters = null;
-
-    public function cacheResults(bool $value = true): self
-    {
-        $this->cacheResults = $value;
-
-        return $this;
-    }
 
     public function updateMetaCache(bool $value = true): self
     {

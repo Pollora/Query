@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Pollora\Query\Traits\User;
 
 use Pollora\Query\QueryException;
+use Pollora\Query\Traits\Concerns\ValidatesChoices;
 
 trait Filters
 {
+    use ValidatesChoices;
+
     protected ?int $blogId = null;
 
     /**
@@ -203,9 +206,7 @@ trait Filters
         $allowed = ['ID', 'user_login', 'user_email', 'user_url', 'user_nicename', 'display_name'];
 
         foreach ($columns as $column) {
-            if (! in_array($column, $allowed, true)) {
-                throw new QueryException('Invalid search column supplied: '.$column);
-            }
+            $this->assertOneOf($column, $allowed, 'search column');
         }
 
         $this->searchColumns = $columns;

@@ -14,14 +14,12 @@ trait MetaQuery
      */
     protected ?array $metaQuery = null;
 
-    use SubQueryTrait {
-        SubQueryTrait::query as genericQuery;
-    }
+    use SubQueryTrait;
 
     public function metaQuery(callable|SubQuery $callback): self
     {
-        $this->initQuery('meta');
+        $this->addSubQuery('meta', $callback);
 
-        return $this->genericQuery($callback);
+        return $this;
     }
 }

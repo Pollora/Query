@@ -14,14 +14,12 @@ trait TaxQuery
      */
     protected ?array $taxQuery = null;
 
-    use SubQueryTrait {
-        SubQueryTrait::query as genericQuery;
-    }
+    use SubQueryTrait;
 
     public function taxQuery(callable|SubQuery $callback): self
     {
-        $this->initQuery('tax');
+        $this->addSubQuery('tax', $callback);
 
-        return $this->genericQuery($callback);
+        return $this;
     }
 }

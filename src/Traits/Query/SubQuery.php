@@ -6,86 +6,47 @@ namespace Pollora\Query\Traits\Query;
 
 use Pollora\Query\QueryBuilder\SubQuery as SubQueryAbstract;
 
+/**
+ * Shared behaviour of metaQuery(), dateQuery() and taxQuery(): the `<type>Query` property is filled
+ * from a closure (given a fresh builder) or from a single sub-query.
+ */
 trait SubQuery
 {
-    protected ?string $queryType = null;
-
-    public function initQuery(string $type): self
+    /**
+     * @param  'meta'|'date'|'tax'  $type
+     */
+    protected function addSubQuery(string $type, callable|SubQueryAbstract $callback): void
     {
-        $this->queryType = $type;
-
-        return $this;
-    }
-
-    public function query(callable|SubQueryAbstract $callback): self
-    {
-        $this->initializeQueryField();
+        $field = $type.'Query';
+        $this->{$field} ??= ['relation' => 'AND'];
 
         if ($callback instanceof SubQueryAbstract) {
-            $this->handleSubQueryCallback($callback);
-        } else {
-            $this->handleCallableCallback($callback);
-        }
+            $this->addSingleSubQuery($field, $callback);
 
-        return $this;
-    }
-
-    protected function initializeQueryField(): void
-    {
-        $queryField = $this->queryType.'Query';
-
-        if ($this->{$queryField}) {
             return;
         }
 
-        $this->{$queryField} = ['relation' => 'AND'];
-    }
-
-    protected function handleSubQueryCallback(SubQueryAbstract $callback): void
-    {
-        $queryField = $this->queryType.'Query';
-        $subQuery = $this->getSubQueryState($callback);
-
-        ['state' => $state, 'query' => $query] = $subQuery;
-
-        if ($state) {
-            $this->{$queryField}[$state] = $query;
-        } else {
-            $this->{$queryField} = array_merge($this->{$queryField}, [$query]);
-        }
-    }
-
-    /**
-     * @return array{
-     *    state: string,
-     *    query: array<string, int, bool>
-     *  }
-     * /
-     */
-    private function getSubQueryState(SubQueryAbstract $callback): array
-    {
-        $subQuery = $callback->get();
-
-        $state = $subQuery['state'] ?? false;
-        unset($subQuery['state']);
-
-        return ['state' => $state, 'query' => $subQuery];
-    }
-
-    protected function handleCallableCallback(callable $callback): void
-    {
-        $queryField = $this->queryType.'Query';
-        $class = '\\Pollora\\Query\\'.ucfirst($this->queryType).'Query';
-
         // A fresh builder per call: reusing one would replay earlier clauses on every call.
+        $class = '\\Pollora\\Query\\'.ucfirst($type).'Query';
         $builder = new $class;
         $callback($builder);
         $built = $builder->get();
 
-        if (count($built) === 1) {
-            return;
+        if (count($built) > 1) {
+            $this->{$field} = array_merge($this->{$field}, $built);
         }
+    }
 
-        $this->{$queryField} = array_merge($this->{$queryField}, $built);
+    private function addSingleSubQuery(string $field, SubQueryAbstract $subQuery): void
+    {
+        $query = $subQuery->get();
+        $state = $query['state'] ?? false;
+        unset($query['state']);
+
+        if ($state) {
+            $this->{$field}[$state] = $query;
+        } else {
+            $this->{$field}[] = $query;
+        }
     }
 }
