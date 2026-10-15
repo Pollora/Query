@@ -243,6 +243,8 @@ UPDATE_DOCS=1 vendor/bin/pest --group=docs   # rewrite the outputs after a chang
 
 When you add a public method, mention it in the page of its class (the test lists the ones that are missing).
 
+The code style is checked with [Pint](https://laravel.com/docs/pint): run `vendor/bin/pint` to fix it, `vendor/bin/pint --test` to only check it (this is what CI runs). The tests run on PHP 8.2, 8.3 and 8.4, with the highest and the lowest versions of the dependencies.
+
 ## Contributing
 
 Contributions are welcome: see the [contributing guide](https://github.com/Pollora/.github/blob/main/CONTRIBUTING.md). Report security issues privately, as described in the [security policy](https://github.com/Pollora/.github/blob/main/SECURITY.md).

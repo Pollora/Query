@@ -19,7 +19,7 @@
         "pollora/wordpress-args": "^1.1"
     },
     "require-dev": {
-        "laravel/pint": "^1.13",
+        "laravel/pint": "^1.30",
         "pestphp/pest": "^2.19",
         "rector/rector": "^0.18.4",
         "nunomaduro/phpinsights": "^2.8"
