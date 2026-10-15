@@ -1241,6 +1241,8 @@ PostQuery::select()->latest()->get();
 
 ### Date
 
+When `date()` is called without a column, none is sent and WP uses the default of the queried table (`post_date` for posts, `user_registered` for users). Use `created()`, `modified()` or `registered()` to be explicit.
+
 The `PostQuery` class allows you to query posts based on date-related criteria using the `DateQuery` class. This class provides methods to create complex date queries, allowing you to filter posts by their publication, modification, or custom dates.
 
 #### `dateQuery($callback)`
@@ -1837,6 +1839,34 @@ TermQuery::select()
 > WP applies a few overrides that the builder does not hide: `unrestricted()` ignores `childOf()`, `childless()`, `hideEmpty()`, `hierarchical()` and `padCounts()`; a non-zero `parentId()` ignores `childOf()`; without `taxonomy()` every taxonomy is queried.
 
 > **Empty terms are returned by default** (`hide_empty => false`), whereas WP hides them. As with `post_type => 'any'` for posts, no constraint is applied unless you ask for one: call `hideEmpty()` to get WP's behaviour.
+
+## UserQuery
+
+`UserQuery` builds `WP_User_Query` arguments. Like `PostQuery`, it applies no constraint unless you ask for one (WP returns every user when `number` is not set).
+
+```php
+use Pollora\Query\UserQuery;
+
+UserQuery::select()
+    ->roleIn(['editor', 'author'])
+    ->search('*bob*')->searchColumns(['user_login', 'display_name'])
+    ->latest()                          // registered last first
+    ->limit(20)->paged(2)
+    ->get();                            // WP_User_Query
+```
+
+- **Roles and capabilities**: `role()` (every role), `roleIn()`, `roleNotIn()`, `capability()`, `capabilityIn()`, `capabilityNotIn()`, `blogId()`. Capabilities only work when stored in the database.
+- **Identity**: `whereIn()` (`include`), `whereNotIn()` (`exclude`), `login()`, `loginIn()`, `loginNotIn()`, `nicename()`, `nicenameIn()`, `nicenameNotIn()`. `UserQuery::find(5)` or `find([1, 2])` is `include`.
+- **Search**: `search()` (a leading/trailing `*` is a wildcard) and `searchColumns()`, which only accepts `ID`, `user_login`, `user_email`, `user_url`, `user_nicename` and `display_name`.
+- **Authors**: `hasPublishedPosts()` (every public post type) or `hasPublishedPosts(['post', 'page'])`.
+- **Order**: `orderBy($field, $direction)` can be chained, as `orderby` accepts a map of fields and directions. Shortcuts: `orderByName()`, `orderByLogin()`, `orderByEmail()`, `orderByPostCount()`, `orderByInclude()`, `orderByLoginIn()`, `orderByNicenameIn()`, `latest()`, `oldest()`, `orderByMeta()`. The top-level `order` parameter is not needed.
+- **Limit**: `limit()` / `take()` (`number`), `offset()` / `skip()`, `paged()`.
+- **Fields**: `select('ID')`, `select(['ID', 'user_email'])` or `fields()`; `all`, `ID`, `display_name`, `user_login`, `user_nicename`, `user_email`, `user_url`, `user_registered`, `user_pass`, `user_activation_key`, `user_status`, `spam`, `deleted`. Anything else throws a `QueryException`.
+- **Meta and dates**: `metaKey()`, `metaValue()`, `metaCompare()`, `metaType()`, `metaQuery()` as for posts; `dateQuery()` filters on `user_registered` (use `$q->date()` without a column).
+- **Performance**: `cacheResults()`, `countTotal()`, `withoutCount()`.
+- **Results**: `get()` returns the `WP_User_Query`; `first()`, `ids()`, `pluck('user_email')`, `count()` and `exists()` run it on a copy of the builder. `count()` ignores `limit()`, `offset()` and `paged()`.
+
+The deprecated `who` parameter is not supported: use `capability()`.
 
 ## Testing
 

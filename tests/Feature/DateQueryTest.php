@@ -107,12 +107,12 @@ test('DateQuery: no output leaks while building', function () {
     expect(ob_get_clean())->toBe('');
 });
 
-test('DateQuery: column defaults to post_date when no key is given', function () {
+test('DateQuery: no column is emitted when none is given, so WP uses the table default', function () {
     $args = PostQuery::select()->dateQuery(function (DateQuery $query) {
         $query->where($query->date()->after('2024-03-05'));
     })->getArguments();
 
-    expect($args['date_query'][0]['column'])->toBe('post_date');
+    expect($args['date_query'][0])->not->toHaveKey('column');
 });
 
 test('DateQuery: within an array', function () {
@@ -120,7 +120,7 @@ test('DateQuery: within an array', function () {
         $query->where($query->date()->within(['year' => 2024, 'month' => '03']));
     })->getArguments();
 
-    expect($args['date_query'][0])->toBe(['column' => 'post_date', 'year' => 2024, 'month' => 3]);
+    expect($args['date_query'][0])->toBe(['year' => 2024, 'month' => 3]);
 });
 
 test('DateQuery: within a date string matches the whole day', function () {
@@ -128,7 +128,7 @@ test('DateQuery: within a date string matches the whole day', function () {
         $query->where($query->date()->within('2024-03-05'));
     })->getArguments();
 
-    expect($args['date_query'][0])->toBe(['column' => 'post_date', 'year' => 2024, 'month' => 3, 'day' => 5]);
+    expect($args['date_query'][0])->toBe(['year' => 2024, 'month' => 3, 'day' => 5]);
 });
 
 test('DateQuery: within rejects unknown keys', function () {
@@ -162,4 +162,14 @@ test('DateQuery: inclusive can be set on a single clause', function () {
 
     expect($args['date_query'][0]['inclusive'])->toBeTrue()
         ->and($args['date_query'][1])->not->toHaveKey('inclusive');
+});
+
+test('DateQuery: created, modified and registered set the column', function () {
+    $args = PostQuery::select()->dateQuery(function (DateQuery $query) {
+        $query->where($query->date()->created()->after('2024-01-01'))
+            ->where($query->date()->modified()->after('2024-01-01'))
+            ->where($query->date()->registered()->after('2024-01-01'));
+    })->getArguments();
+
+    expect(array_column(array_filter($args['date_query'], 'is_array'), 'column'))->toBe(['post_date', 'post_modified', 'user_registered']);
 });

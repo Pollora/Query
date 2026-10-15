@@ -95,3 +95,36 @@ if (! class_exists('WP_Term_Query')) {
         }
     }
 }
+
+if (! class_exists('WP_User_Query')) {
+    /**
+     * Minimal WP_User_Query double: records the arguments and exposes the users set up by the test.
+     */
+    class WP_User_Query
+    {
+        /** @var array<array> */
+        public static array $log = [];
+
+        public static array $fakeResults = [];
+
+        public static int $fakeTotal = 0;
+
+        public array $query_vars;
+
+        public function __construct(array $args = [])
+        {
+            self::$log[] = $args;
+            $this->query_vars = $args;
+        }
+
+        public function get_results(): array
+        {
+            return self::$fakeResults;
+        }
+
+        public function get_total(): int
+        {
+            return self::$fakeTotal;
+        }
+    }
+}
