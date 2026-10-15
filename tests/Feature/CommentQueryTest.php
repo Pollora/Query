@@ -7,7 +7,7 @@ use Pollora\Query\QueryException;
 
 beforeEach(function () {
     WP_Comment_Query::$log = [];
-    WP_Comment_Query::$fakeComments = [];
+    WP_Comment_Query::$fakeResults = [];
     WP_Comment_Query::$fakeCount = 0;
 });
 
@@ -156,7 +156,7 @@ test('CommentQuery: get runs WP_Comment_Query with the arguments', function () {
 
 test('CommentQuery: first', function () {
     $comment = new stdClass;
-    WP_Comment_Query::$fakeComments = [$comment, new stdClass];
+    WP_Comment_Query::$fakeResults = [$comment, new stdClass];
 
     expect(CommentQuery::select()->postId(3)->first())->toBe($comment)
         ->and(WP_Comment_Query::$log[0])->toMatchArray(['number' => 1, 'post_id' => 3]);
@@ -168,7 +168,7 @@ test('CommentQuery: first returns null when nothing matches and ignores paging a
 });
 
 test('CommentQuery: ids', function () {
-    WP_Comment_Query::$fakeComments = ['3', 5];
+    WP_Comment_Query::$fakeResults = ['3', 5];
 
     expect(CommentQuery::select()->limit(20)->ids())->toBe([3, 5])
         ->and(WP_Comment_Query::$log[0])->toMatchArray(['fields' => 'ids', 'number' => 20]);
@@ -185,7 +185,7 @@ test('CommentQuery: count ignores limit, offset and page', function () {
 test('CommentQuery: exists', function () {
     expect(CommentQuery::select()->exists())->toBeFalse();
 
-    WP_Comment_Query::$fakeComments = [1];
+    WP_Comment_Query::$fakeResults = [1];
 
     expect(CommentQuery::select()->exists())->toBeTrue()
         ->and(WP_Comment_Query::$log[1])->toMatchArray(['fields' => 'ids', 'number' => 1]);

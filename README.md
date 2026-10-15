@@ -1895,6 +1895,38 @@ CommentQuery::select()
 
 > WP's default status is `all`, which is `hold` and `approve`: **spam and trash comments are left out** unless you ask for them with `status()`. `CommentQuery` does not change that. WP also skips counting the total rows by default (`no_found_rows`), call `noFoundRows(false)` if you need it.
 
+## SiteQuery and NetworkQuery
+
+Multisite queries: `SiteQuery` builds `WP_Site_Query` arguments, `NetworkQuery` builds `WP_Network_Query` arguments.
+
+```php
+use Pollora\Query\NetworkQuery;
+use Pollora\Query\SiteQuery;
+
+SiteQuery::select()
+    ->networkId(1)
+    ->wherePublic()->whereDeleted(false)
+    ->search('*shop*')->searchColumns(['domain'])
+    ->latest()
+    ->get();                              // WP_Site_Query
+
+NetworkQuery::select()->domain('example.com')->first();
+```
+
+**SiteQuery**
+- **Sites**: `whereIn()` (`site__in`), `whereNotIn()`, `networkId()`, `networkIn()`, `networkNotIn()`, `domain*()`, `path*()`, `langId()`, `langIn()`, `langNotIn()`. `SiteQuery::find(3)` or `find([1, 2])` is `site__in`; WP's `ID` argument is the same thing.
+- **Status**: `wherePublic()`, `whereArchived()`, `whereMature()`, `whereSpam()`, `whereDeleted()`, each taking a bool (sent as 1 or 0). Without them WP applies no filter, so archived, spam and deleted sites are returned.
+- **Search**: `search()` (a leading/trailing `*` is a wildcard) and `searchColumns()`, which only accepts `domain` and `path`.
+- **Meta and dates**: `metaKey()`, `metaValue()`, `metaQuery()` as for posts; `dateQuery()` filters on the `registered` column.
+- **Order**: `orderBy($field, $direction)` can be chained (sent as a map); `orderByDomain()`, `orderByPath()`, `orderByDomainLength()`, `orderByPathLength()`, `orderByLastUpdated()`, `orderByInclude()`, `orderByNetworkIn()`, `latest()`, `oldest()`, `withoutOrder()`.
+- **Cache**: `noFoundRows()`, `updateCache()`, `updateMetaCache()`.
+
+**NetworkQuery**: `whereIn()` (`network__in`), `whereNotIn()`, `domain*()`, `path*()`, `search()`, `orderByDomain()`, `orderByPath()`, `orderByDomainLength()`, `orderByPathLength()`, `orderByInclude()`, `withoutOrder()`, `noFoundRows()`, `updateCache()`. `NetworkQuery::find(2)` is `network__in`.
+
+**Both**: `limit()` / `take()` (`number`), `offset()` / `skip()`, `select('ids')` or `fields('ids')`, and the terminals `get()`, `first()`, `ids()`, `count()` and `exists()`, which run on a copy of the builder.
+
+> `WP_Site_Query` returns at most 100 sites unless told otherwise, which silently truncates large networks. `SiteQuery` sends `number => 0` (no cap) by default: call `limit()` if you want one. WP only applies `offset` together with a `number`, so use `skip()` with `limit()`.
+
 ## Testing
 
 ```bash
