@@ -8,17 +8,17 @@ use Pollora\Query\QueryException;
 
 class DateQueryBuilder extends SubQuery
 {
-    private readonly string $year;
+    private ?int $year = null;
 
-    private readonly string $month;
+    private ?int $month = null;
 
-    private readonly string $day;
+    private ?int $day = null;
 
-    private readonly string $hour;
+    private ?int $hour = null;
 
-    private readonly string $minute;
+    private ?int $minute = null;
 
-    private readonly string $second;
+    private ?int $second = null;
 
     /**
      * @var array{
@@ -42,13 +42,28 @@ class DateQueryBuilder extends SubQuery
 
     final public const ALLOWED_KEYS = ['year', 'month', 'day', 'hour', 'minute', 'second'];
 
-    public function __construct(private ?string $column = 'post_date')
+    private string $column;
+
+    private bool $inclusive = false;
+
+    public function __construct(?string $column = self::POST_CREATED)
     {
+        $this->column = $column ?? self::POST_CREATED;
     }
 
     public function created(): self
     {
         $this->column = self::POST_CREATED;
+
+        return $this;
+    }
+
+    /**
+     * Includes the 'before' and 'after' boundaries themselves in the results.
+     */
+    public function inclusive(bool $inclusive = true): self
+    {
+        $this->inclusive = $inclusive;
 
         return $this;
     }
@@ -65,24 +80,13 @@ class DateQueryBuilder extends SubQuery
      *
      * @throws QueryException
      */
-    private function validateDateArray(array $date): bool
-    {
-        foreach ($date as $key => $part) {
-            if (! in_array($key, self::ALLOWED_KEYS)) {
-                throw new QueryException('Invalid key '.$key.' element supplied.');
-            }
-            $this->$key = $part;
-        }
-
-        return true;
-    }
-
-    /**
-     * @param  array<string, string|int|array>  $date
-     */
     private function applyDateArray(array $date): void
     {
         foreach ($date as $key => $part) {
+            if (! in_array($key, self::ALLOWED_KEYS, true)) {
+                throw new QueryException('Invalid key '.$key.' element supplied.');
+            }
+
             $this->$key = (int) $part;
         }
     }
@@ -90,13 +94,20 @@ class DateQueryBuilder extends SubQuery
     /**
      * @throws QueryException
      */
-    public function within(array|string $date, string $extract = 'Ymdhis'): self
+    public function within(array|string $date, string $extract = 'YmdHis'): self
     {
         if (is_array($date)) {
-            $this->handleArrayDate($date);
-        } else {
-            $this->handleStringOrNumericDate($date, $extract);
+            $this->applyDateArray($date);
+
+            return $this;
         }
+
+        // A date without a time part matches the whole day, not midnight only.
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) === 1) {
+            $extract = 'Ymd';
+        }
+
+        $this->applyDateArray($this->extractFromDate($date, $extract));
 
         return $this;
     }
@@ -145,15 +156,13 @@ class DateQueryBuilder extends SubQuery
      *
      * @throws QueryException
      */
-    public function extractFromDate(array|string $date, string $extract = 'Ymdhis'): array
+    public function extractFromDate(array|string $date, string $extract = 'YmdHis'): array
     {
         if (is_array($date)) {
             return $date;
         }
 
-        if (! is_numeric($date)) {
-            $date = strtotime($date);
-        }
+        $date = is_numeric($date) ? (int) $date : strtotime($date);
 
         if ($date === false) {
             throw new QueryException('Provided datestring could not be converted to time');
@@ -172,7 +181,6 @@ class DateQueryBuilder extends SubQuery
      *   second: string,
      * }
      */
-
     private function extractDateDetails(int $date, string $extract): array
     {
         $extracted = [];
@@ -180,49 +188,35 @@ class DateQueryBuilder extends SubQuery
             'Y' => 'year',
             'm' => 'month',
             'd' => 'day',
-            'h' => 'hour',
+            'H' => 'hour',
             'i' => 'minute',
             's' => 'second',
         ];
 
         foreach ($mapping as $key => $value) {
-            if (str_contains($extract, $key)) {
-                $extracted[$value] = date($key, $date);
+            // 'h' is accepted as an alias: WP expects a 24-hour clock, so it is always formatted as 'H'.
+            if (str_contains($extract, $key) || ($key === 'H' && str_contains($extract, 'h'))) {
+                $extracted[$value] = (int) date($key, $date);
             }
         }
 
-        var_export($extracted);
-
         return $extracted;
-    }
-
-    /**
-     * @param  array<string, string|int|array>  $date
-     *
-     * @throws QueryException
-     */
-    private function handleArrayDate(array $date): void
-    {
-        if ($this->validateDateArray($date)) {
-            $this->applyDateArray($date);
-        }
-    }
-
-    /**
-     * @param  array<string, string|int|array>|string  $date
-     *
-     * @throws QueryException
-     */
-    private function handleStringOrNumericDate(string|array $date, string $extract): void
-    {
-        $parts = $this->extractFromDate($date, $extract);
-        $this->applyDateArray($parts);
     }
 
     /**
      * @return array<string, string|int|array>
      */
     public function get(): array
+    {
+        $clause = $this->buildClause();
+
+        return $this->inclusive ? $clause + ['inclusive' => true] : $clause;
+    }
+
+    /**
+     * @return array<string, string|int|array>
+     */
+    private function buildClause(): array
     {
         $beforeIsNotNull = ! is_null($this->before);
         $afterIsNotNull = ! is_null($this->after);
@@ -292,14 +286,13 @@ class DateQueryBuilder extends SubQuery
      */
     private function handleDefault(): array
     {
-        return [
-            'column' => $this->column,
+        return ['column' => $this->column] + array_filter([
             'year' => $this->year,
             'month' => $this->month,
             'day' => $this->day,
             'hour' => $this->hour,
             'minute' => $this->minute,
             'second' => $this->second,
-        ];
+        ], fn (?int $part): bool => $part !== null);
     }
 }

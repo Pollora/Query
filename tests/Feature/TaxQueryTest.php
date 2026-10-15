@@ -154,3 +154,20 @@ test('TaxQuery: tax_query (nested)', function () {
         ],
     ]);
 });
+
+test('TaxQuery: calling taxQuery twice does not duplicate clauses', function () {
+    $args = PostQuery::select()
+        ->taxQuery(fn (TaxQuery $q) => $q->where($q->taxonomy('genre')->contains([1])))
+        ->taxQuery(fn (TaxQuery $q) => $q->where($q->taxonomy('year')->contains([2])))
+        ->getArguments();
+
+    expect(array_column(array_filter($args['tax_query'], 'is_array'), 'taxonomy'))->toBe(['genre', 'year']);
+});
+
+test('TaxQuery: no builder state leaks into the arguments', function () {
+    $args = PostQuery::select()
+        ->taxQuery(fn (TaxQuery $q) => $q->where($q->taxonomy('genre')->contains([1])))
+        ->getArguments();
+
+    expect($args)->not->toHaveKeys(['query_builder', 'query_type']);
+});

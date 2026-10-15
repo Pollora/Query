@@ -91,3 +91,16 @@ test('Post: post_name__in', function () {
         'post_name__in' => ['slug-1', 'slug-2'],
     ]);
 });
+
+test('Post: post_type accepts an array', function () {
+    $args = PostQuery::select()
+        ->postType(['post', 'page'])
+        ->getArguments();
+
+    expect($args['post_type'])->toBe(['post', 'page']);
+});
+
+test('Post: post_type defaults to any so that no type is filtered out', function () {
+    expect(PostQuery::select()->getArguments()['post_type'])->toBe('any')
+        ->and(PostQuery::find(5)->getArguments()['post_type'])->toBe('any');
+});

@@ -28,30 +28,66 @@ class ValueTypeDetector
         ];
 
         foreach ($detectorClasses as $detectorClass) {
-            $this->detectors[] = new $detectorClass();
+            $this->detectors[] = new $detectorClass;
         }
     }
 
     public function detect(): string
     {
-        if (is_array($this->value)) {
-            $this->value = $this->value[0];
-        }
-
         if (! is_null($this->type)) {
             return $this->type;
         }
 
-        return $this->detectType();
+        if (is_array($this->value)) {
+            return $this->detectArrayType($this->value);
+        }
+
+        return $this->detectType($this->value);
     }
 
-    private function detectType(): ?string
+    /**
+     * Detects a single type that fits every value of the array.
+     *
+     * @param  array<mixed>  $values
+     */
+    private function detectArrayType(array $values): string
+    {
+        $types = array_values(array_unique(array_map(fn (mixed $value): string => $this->detectType($value), $values)));
+
+        if ($types === []) {
+            return CharType::CHAR;
+        }
+
+        if (count($types) === 1) {
+            return $types[0];
+        }
+
+        $numeric = [
+            BooleanType::BINARY,
+            NumberType::UNSIGNED,
+            NumberType::SIGNED,
+            NumberType::NUMERIC,
+            NumberType::DECIMAL,
+        ];
+
+        if (array_diff($types, $numeric) !== []) {
+            return CharType::CHAR;
+        }
+
+        foreach ([NumberType::DECIMAL, NumberType::NUMERIC, NumberType::SIGNED] as $wider) {
+            if (in_array($wider, $types, true)) {
+                return $wider;
+            }
+        }
+
+        return NumberType::UNSIGNED;
+    }
+
+    private function detectType(mixed $value): string
     {
         $type = array_reduce(
             $this->detectors,
-            function ($carry, $detector) {
-                return $carry ?? $detector->detect($this->value);
-            }
+            fn (?string $carry, ValueTypeContract $detector): ?string => $carry ?? $detector->detect($value)
         );
 
         return $type ?? CharType::CHAR;

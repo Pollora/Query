@@ -6,8 +6,6 @@ namespace Pollora\Query\QueryBuilder;
 
 class MetaQueryBuilder extends SubQuery
 {
-    protected ?string $type = null;
-
     private ComparisonBuilder $comparisonBuilder;
 
     protected ?string $state = null;
@@ -16,12 +14,12 @@ class MetaQueryBuilder extends SubQuery
         private readonly mixed $key,
         private readonly mixed $value = null,
     ) {
-        $this->comparisonBuilder = new ComparisonBuilder($this->value, $this->type ?? null);
+        $this->comparisonBuilder = new ComparisonBuilder(null, $this->value);
     }
 
     public function ofType(string $type): self
     {
-        $this->type = $type;
+        $this->comparisonBuilder = $this->comparisonBuilder->withType($type);
 
         return $this;
     }

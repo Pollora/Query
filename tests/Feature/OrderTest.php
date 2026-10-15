@@ -15,3 +15,24 @@ test('Order: orderby', function () {
         ],
     ]);
 });
+
+test('Order: orderby accepts a map of fields', function () {
+    $args = PostQuery::select()
+        ->orderBy(['post_date' => 'asc', 'title' => 'DESC'])
+        ->getArguments();
+
+    expect($args['orderby'])->toBe(['post_date' => 'ASC', 'title' => 'DESC']);
+});
+
+test('Order: inRandomOrder is an orderby array and can be replaced by real columns', function () {
+    $random = PostQuery::select()->inRandomOrder()->getArguments();
+    $replaced = PostQuery::select()->inRandomOrder()->latest()->getArguments();
+
+    expect($random['orderby'])->toBe(['rand' => 'ASC'])
+        ->and($replaced['orderby'])->toBe(['post_date' => 'DESC']);
+});
+
+test('Order: latest and oldest', function () {
+    expect(PostQuery::select()->latest()->getArguments()['orderby'])->toBe(['post_date' => 'DESC'])
+        ->and(PostQuery::select()->oldest()->getArguments()['orderby'])->toBe(['post_date' => 'ASC']);
+});

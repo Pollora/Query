@@ -15,7 +15,7 @@ trait Category
     /**
      * @var array<int>|null
      */
-    protected ?array $categoryAnd = null;
+    protected ?array $category_And = null;
 
     /**
      * @var array<int>|null
@@ -47,7 +47,7 @@ trait Category
      */
     public function categoryAnd(array $categoryAnd): self
     {
-        $this->categoryAnd = $categoryAnd;
+        $this->category_And = $categoryAnd;
 
         return $this;
     }

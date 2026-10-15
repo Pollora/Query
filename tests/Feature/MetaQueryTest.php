@@ -209,3 +209,97 @@ test('MetaQuery: meta_query (nested)', function () {
         ],
     ]);
 });
+
+test('MetaQuery: ofType overrides the detected type', function () {
+    $args = PostQuery::select()->metaQuery(function (MetaQuery $query) {
+        $query->where($query->meta('price')->ofType('NUMERIC')->greaterThan(10));
+    })->getArguments();
+
+    expect($args['meta_query'][0])->toBe(['key' => 'price', 'compare' => '>', 'type' => 'NUMERIC', 'value' => 10]);
+});
+
+test('MetaQuery: ofType survives a later comparison', function () {
+    $args = PostQuery::select()->metaQuery(function (MetaQuery $query) {
+        $query->where($query->meta('d')->ofType('DATE')->between('2024-01-01', '2024-02-01'));
+        $query->where($query->meta('n')->greaterThan(1)->ofType('DECIMAL'));
+    })->getArguments();
+
+    expect($args['meta_query'][0]['type'])->toBe('DATE')
+        ->and($args['meta_query'][1]['type'])->toBe('DECIMAL');
+});
+
+test('MetaQuery: between detects a type that fits both boundaries', function () {
+    $args = PostQuery::select()->metaQuery(function (MetaQuery $query) {
+        $query->where($query->meta('a')->between(1, 50));
+        $query->where($query->meta('b')->between(-5, 5));
+        $query->where($query->meta('c')->between(1, 2.5));
+        $query->where($query->meta('d')->between('2024-01-01', '2024-02-01'));
+        $query->where($query->meta('e')->in(['x', 3]));
+    })->getArguments();
+
+    expect(array_column(array_slice($args['meta_query'], 1), 'type'))->toBe(['UNSIGNED', 'SIGNED', 'DECIMAL', 'DATE', 'CHAR']);
+});
+
+test('MetaQuery: an empty in() list does not raise a warning', function () {
+    $args = PostQuery::select()->metaQuery(function (MetaQuery $query) {
+        $query->where($query->meta('a')->in([]));
+    })->getArguments();
+
+    expect($args['meta_query'][0])->toMatchArray(['compare' => 'IN', 'type' => 'CHAR', 'value' => []]);
+});
+
+test('MetaQuery: calling metaQuery twice does not duplicate clauses', function () {
+    $args = PostQuery::select()
+        ->metaQuery(fn (MetaQuery $q) => $q->where($q->meta('a')->equalTo('x')))
+        ->metaQuery(fn (MetaQuery $q) => $q->where($q->meta('b')->equalTo('y')))
+        ->getArguments();
+
+    expect(array_column(array_filter($args['meta_query'], 'is_array'), 'key'))->toBe(['a', 'b']);
+});
+
+test('MetaQuery: mixing where and orWhere groups like Eloquent', function () {
+    $args = PostQuery::select()->metaQuery(function (MetaQuery $q) {
+        $q->where($q->meta('a')->equalTo('1'))
+            ->where($q->meta('b')->equalTo('2'))
+            ->orWhere($q->meta('c')->equalTo('3'));
+    })->getArguments();
+
+    $keys = fn (array $group) => array_column(array_filter($group, 'is_array'), 'key');
+
+    expect($args['meta_query']['relation'])->toBe('OR')
+        ->and($args['meta_query'][0]['relation'])->toBe('AND')
+        ->and($keys($args['meta_query'][0]))->toBe(['a', 'b'])
+        ->and($args['meta_query'][1]['key'])->toBe('c');
+});
+
+test('MetaQuery: a relation switch after two clauses keeps grouping left to right', function () {
+    $args = PostQuery::select()->metaQuery(function (MetaQuery $q) {
+        $q->where($q->meta('a')->equalTo('1'))
+            ->orWhere($q->meta('b')->equalTo('2'))
+            ->where($q->meta('c')->equalTo('3'));
+    })->getArguments();
+
+    // ((a OR b) AND c)
+    expect($args['meta_query']['relation'])->toBe('AND')
+        ->and($args['meta_query'][0]['relation'])->toBe('OR')
+        ->and($args['meta_query'][1]['key'])->toBe('c');
+});
+
+test('MetaQuery: a single clause just takes the requested relation', function () {
+    $args = PostQuery::select()->metaQuery(function (MetaQuery $q) {
+        $q->orWhere($q->meta('a')->equalTo('1'))->where($q->meta('b')->equalTo('2'));
+    })->getArguments();
+
+    expect($args['meta_query']['relation'])->toBe('AND')
+        ->and($args['meta_query'])->toHaveCount(3);
+});
+
+test('MetaQuery: named clauses survive grouping', function () {
+    $args = PostQuery::select()->metaQuery(function (MetaQuery $q) {
+        $q->where($q->meta('a')->equalTo('1')->state('first'))
+            ->where($q->meta('b')->equalTo('2'))
+            ->orWhere($q->meta('c')->equalTo('3'));
+    })->getArguments();
+
+    expect($args['meta_query'][0])->toHaveKey('first');
+});

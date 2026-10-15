@@ -6,35 +6,41 @@ namespace Pollora\Query\Traits;
 
 trait Order
 {
-    protected array|string|null $orderby = null;
+    /**
+     * @var array<string, string>|null
+     */
+    protected ?array $orderby = null;
 
-    public function orderBy(array|string $orderby, array|string $order = 'DESC'): self
+    /**
+     * @param  array<string, string>|string  $orderby  A field, or a map of field => direction.
+     */
+    public function orderBy(array|string $orderby, string $order = 'DESC'): self
     {
-        if (! $this->orderby) {
-            $this->orderby = [];
+        $columns = is_array($orderby) ? $orderby : [$orderby => $order];
+
+        // 'rand' cannot be combined with other fields, drop it when real columns are added.
+        unset($this->orderby['rand']);
+
+        foreach ($columns as $column => $direction) {
+            $this->orderby[$column] = strtoupper($direction);
         }
-        $this->orderby[$orderby] = $order;
 
         return $this;
     }
 
     public function latest(): self
     {
-        $this->orderby['post_date'] = 'DESC';
-
-        return $this;
+        return $this->orderBy('post_date', 'DESC');
     }
 
     public function oldest(): self
     {
-        $this->orderby['post_date'] = 'ASC';
-
-        return $this;
+        return $this->orderBy('post_date', 'ASC');
     }
 
     public function inRandomOrder(): self
     {
-        $this->orderby = 'rand';
+        $this->orderby = ['rand' => 'ASC'];
 
         return $this;
     }

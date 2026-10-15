@@ -29,11 +29,6 @@ class PostQuery
 {
     use ArgumentHelper, Author, Caching, Category, Comment, DateQuery, Field, MetaQuery, MimeType, Order, Pagination, Password, Permission, PostTrait, PostType, Search, Status, Tag, TaxQuery;
 
-    /**
-     * @var array<array|string>
-     */
-    private array $queryBuilder = [];
-
     public function __construct(array|int|null $postId = null, ?string $fields = null)
     {
         if (is_int($postId)) {
@@ -63,7 +58,6 @@ class PostQuery
     public function getArguments(): array
     {
         $args = $this->buildArguments();
-        unset($args['query_builder']);
         unset($args['query_type']);
 
         return $args;
