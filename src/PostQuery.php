@@ -20,6 +20,7 @@ use Pollora\Query\Traits\Period;
 use Pollora\Query\Traits\Permission;
 use Pollora\Query\Traits\Post as PostTrait;
 use Pollora\Query\Traits\PostType;
+use Pollora\Query\Traits\Retrieval;
 use Pollora\Query\Traits\Search;
 use Pollora\Query\Traits\Status;
 use Pollora\Query\Traits\Tag;
@@ -29,7 +30,7 @@ use WP_Query;
 
 class PostQuery
 {
-    use ArgumentHelper, Author, Caching, Category, Comment, DateQuery, Field, MetaField, MetaQuery, MimeType, Order, Pagination, Password, Period, Permission, PostTrait, PostType, Search, Status, Tag, TaxQuery;
+    use ArgumentHelper, Author, Caching, Category, Comment, DateQuery, Field, MetaField, MetaQuery, MimeType, Order, Pagination, Password, Period, Permission, PostTrait, PostType, Retrieval, Search, Status, Tag, TaxQuery;
 
     public function __construct(array|int|null $postId = null, ?string $fields = null)
     {
