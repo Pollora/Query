@@ -128,3 +128,41 @@ if (! class_exists('WP_User_Query')) {
         }
     }
 }
+
+if (! class_exists('WP_Comment_Query')) {
+    /**
+     * Minimal WP_Comment_Query double: records the arguments and returns the comments set up by the test.
+     */
+    class WP_Comment_Query
+    {
+        /** @var array<array> */
+        public static array $log = [];
+
+        public static mixed $fakeComments = [];
+
+        public static int $fakeCount = 0;
+
+        public array $query_vars = [];
+
+        public array $comments = [];
+
+        public function __construct(array $args = [])
+        {
+            if ($args !== []) {
+                $this->query($args);
+            }
+        }
+
+        public function query(array $args): array|int
+        {
+            self::$log[] = $args;
+            $this->query_vars = $args;
+
+            if (! empty($args['count'])) {
+                return self::$fakeCount;
+            }
+
+            return $this->comments = self::$fakeComments;
+        }
+    }
+}
