@@ -1,0 +1,19 @@
+name: Harness
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    # A label (api-change, breaking) changes what the public surface gate allows.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  harness:
+    uses: Pollora/harness/.github/workflows/php-package.yml@v0.1.11
+    permissions:
+      contents: read

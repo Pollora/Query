@@ -4,6 +4,13 @@ All notable changes to this package are documented here. The format follows [Kee
 
 Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github.com/Pollora/Query/releases).
 
+## [Unreleased]
+
+### Changed
+
+- **Requires PHP 8.3 or later** (PHP 8.2 is no longer maintained). CI runs on PHP 8.3 and 8.4.
+- The development tools move to Pest 3 and the [Pollora harness](https://github.com/Pollora/harness), which replaces Rector 0.18 and PHPInsights.
+
 ## [2.0.0] - 2026-10-15
 
 A major release: Query now covers every query class of WordPress, and several arguments that were wrong or silently ignored are fixed. A few fixes change the results of a query that used to run, so read **[Upgrading](docs/upgrading.md)** before updating.
