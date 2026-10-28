@@ -23,7 +23,7 @@ It is for WordPress developers who are tired of looking up array keys and debugg
 composer require pollora/query
 ```
 
-Requires PHP 8.2+ and WordPress. If your WordPress site does not use Composer yet, see [this article on managing WordPress with Composer](https://deliciousbrains.com/storing-wordpress-in-git/).
+Requires PHP 8.3+ and WordPress. If your WordPress site does not use Composer yet, see [this article on managing WordPress with Composer](https://deliciousbrains.com/storing-wordpress-in-git/).
 
 ## Quick start
 
@@ -243,7 +243,7 @@ UPDATE_DOCS=1 vendor/bin/pest --group=docs   # rewrite the outputs after a chang
 
 When you add a public method, mention it in the page of its class (the test lists the ones that are missing).
 
-The code style is checked with [Pint](https://laravel.com/docs/pint): run `vendor/bin/pint` to fix it, `vendor/bin/pint --test` to only check it (this is what CI runs). The tests run on PHP 8.2, 8.3 and 8.4, with the highest and the lowest versions of the dependencies.
+The code style is checked with [Pint](https://laravel.com/docs/pint): run `vendor/bin/pint` to fix it, `vendor/bin/pint --test` to only check it (this is what CI runs). The tests run on PHP 8.3 and 8.4, with the highest and the lowest versions of the dependencies.
 
 ## Contributing
 

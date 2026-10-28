@@ -12,3 +12,5 @@ coverage.xml
 *.swp
 *.swo
 .vscode/
+# Pollora harness reports
+/.harness/

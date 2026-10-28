@@ -15,19 +15,22 @@
         }
     },
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "pollora/wordpress-args": "^1.1"
     },
     "require-dev": {
         "laravel/pint": "^1.30",
-        "pestphp/pest": "^2.19",
-        "rector/rector": "^0.18.4",
-        "nunomaduro/phpinsights": "^2.8"
+        "pestphp/pest": "^3.8",
+        "pollora/harness": "^0.1.11"
     },
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
+    },
+    "scripts": {
+        "qa": "@php vendor/bin/pollora-qa check",
+        "qa:fast": "@php vendor/bin/pollora-qa check --fast"
     }
 }
