@@ -6,6 +6,10 @@ Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-10-28
+
+A major release for the PHP requirement: no query changed. Run PHP 8.3 or later.
+
 ### Changed
 
 - **Requires PHP 8.3 or later** (PHP 8.2 is no longer maintained). CI runs on PHP 8.3 and 8.4.
