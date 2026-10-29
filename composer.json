@@ -16,7 +16,7 @@
     },
     "require": {
         "php": "^8.3",
-        "pollora/wordpress-args": "^1.1"
+        "pollora/wordpress-args": "^1.1 || ^2.0"
     },
     "require-dev": {
         "laravel/pint": "^1.30",
