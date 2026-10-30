@@ -1,0 +1,12 @@
+# Pollora harness (QA-06): development files stay out of the archive Composer downloads
+/.claude export-ignore
+/.gitattributes export-ignore
+/.github export-ignore
+/.gitignore export-ignore
+/.harness.json export-ignore
+/AGENTS.md export-ignore
+/api-surface.json export-ignore
+/phpstan.neon export-ignore
+/phpunit.xml export-ignore
+/rector.php export-ignore
+/tests export-ignore

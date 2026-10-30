@@ -21,7 +21,7 @@
     "require-dev": {
         "laravel/pint": "^1.30",
         "pestphp/pest": "^3.8",
-        "pollora/harness": "^0.1.11"
+        "pollora/harness": "^0.1.15"
     },
     "config": {
         "allow-plugins": {
