@@ -164,7 +164,7 @@ test('CommentQuery: first', function () {
 
 test('CommentQuery: first returns null when nothing matches and ignores paging and threading', function () {
     expect(CommentQuery::select()->offset(5)->paged(3)->threaded()->first())->toBeNull()
-        ->and(WP_Comment_Query::$log[0])->not->toHaveKeys(['offset', 'paged', 'hierarchical']);
+        ->and(WP_Comment_Query::$log[0])->toLackKeys(['offset', 'paged', 'hierarchical']);
 });
 
 test('CommentQuery: ids', function () {
@@ -179,7 +179,7 @@ test('CommentQuery: count ignores limit, offset and page', function () {
 
     expect(CommentQuery::select()->postId(3)->limit(10)->offset(5)->paged(3)->count())->toBe(42)
         ->and(WP_Comment_Query::$log[0])->toMatchArray(['count' => true, 'post_id' => 3])
-        ->and(WP_Comment_Query::$log[0])->not->toHaveKeys(['number', 'offset', 'paged']);
+        ->and(WP_Comment_Query::$log[0])->toLackKeys(['number', 'offset', 'paged']);
 });
 
 test('CommentQuery: exists', function () {

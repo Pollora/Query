@@ -43,7 +43,7 @@ test('SiteQuery: domain and path', function () {
 });
 
 test('SiteQuery: status flags are sent as 1 or 0, and only when asked', function () {
-    expect(SiteQuery::select()->getArguments())->not->toHaveKeys(['public', 'archived', 'mature', 'spam', 'deleted'])
+    expect(SiteQuery::select()->getArguments())->toLackKeys(['public', 'archived', 'mature', 'spam', 'deleted'])
         ->and(SiteQuery::select()->wherePublic()->whereArchived(false)->whereMature()->whereSpam(false)->whereDeleted()->getArguments())
         ->toMatchArray(['public' => 1, 'archived' => 0, 'mature' => 1, 'spam' => 0, 'deleted' => 1]);
 });
@@ -147,7 +147,7 @@ test('SiteQuery: count ignores the limit and the offset', function () {
 
     expect(SiteQuery::select()->limit(5)->offset(2)->count())->toBe(12)
         ->and(WP_Site_Query::$log[0])->toMatchArray(['count' => true])
-        ->and(WP_Site_Query::$log[0])->not->toHaveKeys(['number', 'offset']);
+        ->and(WP_Site_Query::$log[0])->toLackKeys(['number', 'offset']);
 });
 
 test('SiteQuery: exists', function () {

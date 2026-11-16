@@ -11,8 +11,7 @@
 |
 */
 
-include __DIR__.'/helpers'.DIRECTORY_SEPARATOR.'wp.php';
-include __DIR__.'/helpers'.DIRECTORY_SEPARATOR.'docs.php';
+// tests/Helpers/*.php (WordPress doubles, documentation helpers) are loaded by Pest itself.
 
 // uses(Tests\TestCase::class)->in('Feature');
 
@@ -44,3 +43,14 @@ function something()
 {
     // ..
 }
+
+/*
+| `->toLackKeys([...])` passes as soon as ONE key is missing. This one fails if ANY of the keys is present.
+*/
+expect()->extend('toLackKeys', function (array $keys) {
+    foreach ($keys as $key) {
+        expect($this->value)->not->toHaveKey($key);
+    }
+
+    return $this;
+});

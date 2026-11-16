@@ -23,7 +23,7 @@ test('Retrieval: first returns null when nothing matches', function () {
 test('Retrieval: first ignores paging that would skip the result', function () {
     PostQuery::select()->noPaging()->offset(5)->paged(3)->page(2)->first();
 
-    expect(WP_Query::$log[0])->not->toHaveKeys(['nopaging', 'offset', 'paged', 'page']);
+    expect(WP_Query::$log[0])->toLackKeys(['nopaging', 'offset', 'paged', 'page']);
 });
 
 test('Retrieval: ids asks for ids and returns integers', function () {

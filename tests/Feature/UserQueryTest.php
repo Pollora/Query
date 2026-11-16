@@ -145,7 +145,7 @@ test('UserQuery: first', function () {
 
 test('UserQuery: first returns null when nothing matches and ignores paging', function () {
     expect(UserQuery::select()->offset(5)->paged(3)->first())->toBeNull()
-        ->and(WP_User_Query::$log[0])->not->toHaveKeys(['offset', 'paged']);
+        ->and(WP_User_Query::$log[0])->toLackKeys(['offset', 'paged']);
 });
 
 test('UserQuery: ids and pluck', function () {
@@ -168,7 +168,7 @@ test('UserQuery: count ignores limit, offset and page', function () {
 
     expect(UserQuery::select()->limit(10)->offset(5)->paged(3)->withoutCount()->count())->toBe(42)
         ->and(WP_User_Query::$log[0])->toMatchArray(['fields' => 'ID', 'number' => 1, 'count_total' => true])
-        ->and(WP_User_Query::$log[0])->not->toHaveKeys(['offset', 'paged']);
+        ->and(WP_User_Query::$log[0])->toLackKeys(['offset', 'paged']);
 });
 
 test('UserQuery: exists', function () {
