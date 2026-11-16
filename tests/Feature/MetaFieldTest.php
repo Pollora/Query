@@ -47,5 +47,5 @@ test('MetaQuery: clauses without key comparison have no compare_key', function (
         $q->where($q->meta('a')->equalTo('x'));
     })->getArguments();
 
-    expect($args['meta_query'][0])->not->toHaveKeys(['compare_key', 'type_key', 'state']);
+    expect($args['meta_query'][0])->toLackKeys(['compare_key', 'type_key', 'state']);
 });

@@ -43,3 +43,14 @@ function something()
 {
     // ..
 }
+
+/*
+| `->toLackKeys([...])` passes as soon as ONE key is missing. This one fails if ANY of the keys is present.
+*/
+expect()->extend('toLackKeys', function (array $keys) {
+    foreach ($keys as $key) {
+        expect($this->value)->not->toHaveKey($key);
+    }
+
+    return $this;
+});

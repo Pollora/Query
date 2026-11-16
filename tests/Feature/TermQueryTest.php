@@ -153,7 +153,7 @@ test('TermQuery: count ignores limit and offset', function () {
 
     expect(TermQuery::select()->limit(5)->offset(5)->count())->toBe(12)
         ->and(WP_Term_Query::$log[0])->toMatchArray(['fields' => 'count'])
-        ->and(WP_Term_Query::$log[0])->not->toHaveKeys(['number', 'offset']);
+        ->and(WP_Term_Query::$log[0])->toLackKeys(['number', 'offset']);
 });
 
 test('TermQuery: exists', function () {
