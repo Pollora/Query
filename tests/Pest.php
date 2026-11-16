@@ -11,8 +11,7 @@
 |
 */
 
-include __DIR__.'/helpers'.DIRECTORY_SEPARATOR.'wp.php';
-include __DIR__.'/helpers'.DIRECTORY_SEPARATOR.'docs.php';
+// tests/Helpers/*.php (WordPress doubles, documentation helpers) are loaded by Pest itself.
 
 // uses(Tests\TestCase::class)->in('Feature');
 
