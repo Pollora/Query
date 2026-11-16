@@ -1,16 +1,25 @@
 <?php
 
+use Pollora\Query\CommentQuery;
 use Pollora\Query\DateQuery;
+use Pollora\Query\MetaQuery;
 use Pollora\Query\PostQuery;
 use Pollora\Query\Query;
 use Pollora\Query\QueryBuilder\DateQueryBuilder;
 use Pollora\Query\QueryBuilder\TaxQueryBuilder;
 use Pollora\Query\QueryException;
+use Pollora\Query\SiteQuery;
+use Pollora\Query\TermQuery;
+use Pollora\Query\UserQuery;
 use Pollora\Query\Utils\ValueTypeDetector;
 
 beforeEach(function () {
     WP_Query::$log = [];
     WP_Query::$fakePosts = [];
+    WP_Term_Query::$log = [];
+    WP_Term_Query::$fakeTerms = [];
+    WP_User_Query::$log = [];
+    WP_User_Query::$fakeResults = [];
 });
 
 test('DateQuery: an unknown key in a date array names itself in the error', function () {
@@ -121,4 +130,49 @@ test('Retrieval: count ignores paging at the PostQuery level too', function () {
 
     expect(WP_Query::$log[0])->toLackKeys(['nopaging', 'offset', 'paged', 'page'])
         ->and(WP_Query::$log[0]['ignore_sticky_posts'])->toBeTrue();
+});
+
+test('TermQuery: ids, names and slugs come back as lists whatever the keys WordPress gives them', function () {
+    WP_Term_Query::$fakeTerms = [5 => 'a', 9 => 'b'];
+
+    expect(TermQuery::select()->names())->toBe(['a', 'b'])
+        ->and(TermQuery::select()->slugs())->toBe(['a', 'b']);
+
+    WP_Term_Query::$fakeTerms = [5 => '3', 9 => '4'];
+
+    expect(TermQuery::select()->ids())->toBe([3, 4]);
+});
+
+test('UserQuery: users come back as a list whatever the keys WordPress gives them', function () {
+    WP_User_Query::$fakeResults = [4 => 'a', 8 => 'b'];
+
+    expect(UserQuery::select()->pluck('user_email'))->toBe(['a', 'b']);
+});
+
+test('UserQuery: pluck and exists do not ask for a total', function () {
+    WP_User_Query::$fakeResults = ['a@x.test'];
+
+    UserQuery::select()->pluck('user_email');
+    UserQuery::select()->exists();
+
+    expect(WP_User_Query::$log[0]['count_total'])->toBeFalse()
+        ->and(WP_User_Query::$log[1]['count_total'])->toBeFalse();
+});
+
+test('UserQuery: pluck refuses the wildcard as well as all', function () {
+    UserQuery::select()->pluck('*');
+})->throws(QueryException::class, "pluck() expects a single field, 'all' returns whole users: use get().");
+
+test('SiteQuery: both search columns are accepted', function (string $column) {
+    expect(SiteQuery::select()->searchColumns([$column])->getArguments()['search_columns'])->toBe([$column]);
+})->with(['domain', 'path']);
+
+test('CommentQuery: hierarchical takes true as a mode that WordPress does not know, and says so', function () {
+    CommentQuery::select()->hierarchical(true);
+})->throws(QueryException::class, 'Invalid hierarchical mode supplied: 1');
+
+test('MetaQuery: a type is written in capitals whatever the case it is given in', function () {
+    $clause = PostQuery::select()->metaQuery(fn (MetaQuery $q) => $q->where($q->meta('p')->ofType('numeric')->equalTo('5')))->getArguments()['meta_query'][0];
+
+    expect($clause['type'])->toBe('NUMERIC');
 });
