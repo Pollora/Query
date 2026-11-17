@@ -9,12 +9,12 @@ use Pollora\Query\Traits\Query\SubQuery as SubQueryTrait;
 
 trait DateQuery
 {
+    use SubQueryTrait;
+
     /**
      * @var array<string|array>
      */
     protected ?array $dateQuery = null;
-
-    use SubQueryTrait;
 
     public function dateQuery(callable|SubQuery $callback): self
     {

@@ -6,8 +6,6 @@ namespace Pollora\Query\QueryBuilder;
 
 abstract class SubQuery
 {
-    protected string $compare = 'LIKE';
-
     public const EQUAL = '=';
 
     public const NOT_EQUAL = '!=';
@@ -41,4 +39,6 @@ abstract class SubQuery
     public const NOT_REGEXP = 'NOT REGEXP';
 
     public const RLIKE = 'RLIKE';
+
+    protected string $compare = 'LIKE';
 }

@@ -28,9 +28,33 @@ use Pollora\Query\Traits\Tag;
 use Pollora\Query\Traits\TaxQuery;
 use WP_Query;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class PostQuery
 {
-    use Author, BuildsArguments, Caching, Category, Comment, DateQuery, Field, MetaField, MetaQuery, MimeType, Order, Pagination, Password, Period, Permission, PostTrait, PostType, Retrieval, Search, Status, Tag, TaxQuery;
+    use Author;
+    use BuildsArguments;
+    use Caching;
+    use Category;
+    use Comment;
+    use DateQuery;
+    use Field;
+    use MetaField;
+    use MetaQuery;
+    use MimeType;
+    use Order;
+    use Pagination;
+    use Password;
+    use Period;
+    use Permission;
+    use PostTrait;
+    use PostType;
+    use Retrieval;
+    use Search;
+    use Status;
+    use Tag;
+    use TaxQuery;
 
     public function __construct(array|int|null $postId = null, ?string $fields = null)
     {

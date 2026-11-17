@@ -15,10 +15,18 @@ use WP_Network_Query;
 
 /**
  * Multisite.
+ *
+ * @phpstan-consistent-constructor
  */
 class NetworkQuery
 {
-    use BuildsArguments, Caching, Filters, LimitsResults, Order, Retrieval, SelectsIds;
+    use BuildsArguments;
+    use Caching;
+    use Filters;
+    use LimitsResults;
+    use Order;
+    use Retrieval;
+    use SelectsIds;
 
     /**
      * @param  array<int>|int|null  $networkId  A network ID, or a list of network IDs.

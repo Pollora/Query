@@ -21,16 +21,6 @@ trait RetrievesRecords
     protected ?bool $count = null;
 
     /**
-     * A fresh WP_*_Query object, whose `query(array $args)` method is called with the arguments.
-     */
-    abstract protected function newWpQuery(): object;
-
-    /**
-     * Hook to reset the arguments of a copy that would alter a terminal result.
-     */
-    protected function prepareCopy(self $copy): void {}
-
-    /**
      * The first matching record, or null. An ID with `fields('ids')`.
      */
     public function first(): object|int|null
@@ -48,7 +38,7 @@ trait RetrievesRecords
      */
     public function ids(): array
     {
-        return array_map('intval', $this->runOnCopy(function (self $copy): void {
+        return array_map(intval(...), $this->runOnCopy(function (self $copy): void {
             $copy->fields = 'ids';
         }));
     }
@@ -75,6 +65,16 @@ trait RetrievesRecords
             $copy->resetPaging();
         }) !== [];
     }
+
+    /**
+     * A fresh WP_*_Query object, whose `query(array $args)` method is called with the arguments.
+     */
+    abstract protected function newWpQuery(): object;
+
+    /**
+     * Hook to reset the arguments of a copy that would alter a terminal result.
+     */
+    protected function prepareCopy(self $copy): void {}
 
     /**
      * @return array<mixed>

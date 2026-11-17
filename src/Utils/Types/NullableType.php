@@ -6,7 +6,7 @@ namespace Pollora\Query\Utils\Types;
 
 final class NullableType implements ValueTypeContract
 {
-    public const CHAR = 'CHAR';
+    public const string CHAR = 'CHAR';
 
     public function detect(mixed $value): ?string
     {

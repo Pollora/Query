@@ -45,7 +45,7 @@ trait Retrieval
             $copy->noFoundRows = true;
         });
 
-        return array_map('intval', $query->posts);
+        return array_map(intval(...), $query->posts);
     }
 
     /**

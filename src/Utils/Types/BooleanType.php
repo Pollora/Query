@@ -6,7 +6,7 @@ namespace Pollora\Query\Utils\Types;
 
 final class BooleanType implements ValueTypeContract
 {
-    public const BINARY = 'BINARY';
+    public const string BINARY = 'BINARY';
 
     public function detect(mixed $value): ?string
     {

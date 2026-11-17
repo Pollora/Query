@@ -9,12 +9,12 @@ use Pollora\Query\Traits\Query\SubQuery as SubQueryTrait;
 
 trait MetaQuery
 {
+    use SubQueryTrait;
+
     /**
      * @var array<string|array>
      */
     protected ?array $metaQuery = null;
-
-    use SubQueryTrait;
 
     public function metaQuery(callable|SubQuery $callback): self
     {

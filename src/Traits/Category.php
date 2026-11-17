@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits;
 
-use Pollora\Query\PostQuery;
-
 trait Category
 {
     protected ?int $cat = null;
@@ -43,7 +41,6 @@ trait Category
 
     /**
      * @param  array<int>  $categoryAnd
-     * @return PostQuery|Category
      */
     public function categoryAnd(array $categoryAnd): self
     {
@@ -54,7 +51,6 @@ trait Category
 
     /**
      * @param  array<int>  $categoryIn
-     * @return PostQuery|Category
      */
     public function categoryIn(array $categoryIn): self
     {
@@ -65,7 +61,6 @@ trait Category
 
     /**
      * @param  array<int>  $categoryNotIn
-     * @return PostQuery|Category
      */
     public function categoryNotIn(array $categoryNotIn): self
     {

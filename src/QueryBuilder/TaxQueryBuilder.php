@@ -20,16 +20,16 @@ use Pollora\Query\QueryException;
 class TaxQueryBuilder extends SubQuery
 {
     /** Match the terms by their slug. */
-    final public const SEARCH_BY_SLUG = 'slug';
+    final public const string SEARCH_BY_SLUG = 'slug';
 
     /** Match the terms by their name. */
-    final public const SEARCH_BY_NAME = 'name';
+    final public const string SEARCH_BY_NAME = 'name';
 
     /** Match the terms by their term_taxonomy_id. */
-    final public const SEARCH_BY_TERM_TAX_ID = 'term_taxonomy_id';
+    final public const string SEARCH_BY_TERM_TAX_ID = 'term_taxonomy_id';
 
     /** Match the terms by their term_id (default). */
-    final public const SEARCH_BY_ID = 'term_id';
+    final public const string SEARCH_BY_ID = 'term_id';
 
     /** The field the terms are matched on. */
     private string $field = 'term_id';
@@ -92,7 +92,7 @@ class TaxQueryBuilder extends SubQuery
 
         $allowed = [self::SEARCH_BY_ID, self::SEARCH_BY_NAME, self::SEARCH_BY_TERM_TAX_ID, self::SEARCH_BY_SLUG];
 
-        if (! in_array($field, $allowed)) {
+        if (! in_array($field, $allowed, true)) {
             throw new QueryException('Invalid tax field type supplied: '.$field);
         }
 

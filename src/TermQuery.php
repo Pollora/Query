@@ -16,9 +16,21 @@ use Pollora\Query\Traits\Term\Order;
 use Pollora\Query\Traits\Term\Retrieval;
 use WP_Term_Query;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class TermQuery
 {
-    use BuildsArguments, Caching, Fields, Filters, Hierarchy, LimitsResults, MetaField, MetaQuery, Order, Retrieval;
+    use BuildsArguments;
+    use Caching;
+    use Fields;
+    use Filters;
+    use Hierarchy;
+    use LimitsResults;
+    use MetaField;
+    use MetaQuery;
+    use Order;
+    use Retrieval;
 
     /**
      * @param  array<int>|int|null  $termId  A term ID, or a list of term IDs.

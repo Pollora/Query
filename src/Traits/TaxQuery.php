@@ -9,12 +9,12 @@ use Pollora\Query\Traits\Query\SubQuery as SubQueryTrait;
 
 trait TaxQuery
 {
+    use SubQueryTrait;
+
     /**
      * @var array<string|array>
      */
     protected ?array $taxQuery = null;
-
-    use SubQueryTrait;
 
     public function taxQuery(callable|SubQuery $callback): self
     {

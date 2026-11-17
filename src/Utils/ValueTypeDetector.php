@@ -52,7 +52,7 @@ class ValueTypeDetector
      */
     private function detectArrayType(array $values): string
     {
-        $types = array_values(array_unique(array_map(fn (mixed $value): string => $this->detectType($value), $values)));
+        $types = array_values(array_unique(array_map($this->detectType(...), $values)));
 
         if ($types === []) {
             return CharType::CHAR;

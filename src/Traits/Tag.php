@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits;
 
-use Pollora\Query\PostQuery;
-
 trait Tag
 {
     protected ?string $tag = null;
@@ -53,7 +51,6 @@ trait Tag
 
     /**
      * @param  array<int>  $tagAnd
-     * @return PostQuery|Tag
      */
     public function tagAnd(array $tagAnd): self
     {
@@ -64,7 +61,6 @@ trait Tag
 
     /**
      * @param  array<int>  $tagIn
-     * @return PostQuery|Tag
      */
     public function tagIn(array $tagIn): self
     {
@@ -75,7 +71,6 @@ trait Tag
 
     /**
      * @param  array<int>  $tagNotIn
-     * @return PostQuery|Tag
      */
     public function tagNotIn(array $tagNotIn): self
     {
@@ -86,7 +81,6 @@ trait Tag
 
     /**
      * @param  array<int>  $tagSlugAnd
-     * @return PostQuery|Tag
      */
     public function tagSlugAnd(array $tagSlugAnd): self
     {
@@ -97,7 +91,6 @@ trait Tag
 
     /**
      * @param  array<string>  $tagSlugIn
-     * @return PostQuery|Tag
      */
     public function tagSlugIn(array $tagSlugIn): self
     {
