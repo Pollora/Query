@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pollora\Query\QueryException;
 use Pollora\Query\TermQuery;
 use Pollora\Query\UserQuery;

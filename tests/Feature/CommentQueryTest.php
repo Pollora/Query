@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pollora\Query\CommentQuery;
 use Pollora\Query\DateQuery;
 use Pollora\Query\MetaQuery;

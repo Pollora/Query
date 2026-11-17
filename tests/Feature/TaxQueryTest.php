@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pollora\Query\PostQuery;
 use Pollora\Query\Query;
 use Pollora\Query\TaxQuery;

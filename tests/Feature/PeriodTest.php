@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pollora\Query\PostQuery;
 
 test('Period: date fields', function () {

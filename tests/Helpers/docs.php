@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Support for the tests that run the examples of the documentation (tests/Docs).
  *

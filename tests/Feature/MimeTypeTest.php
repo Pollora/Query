@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pollora\Query\PostQuery;
 
 it('Mimetype: string', function () {
