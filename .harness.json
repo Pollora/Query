@@ -7,7 +7,8 @@
     "ratchet": {
         "phpstan_level": 5,
         "phpstan_baseline": 0,
-        "coverage": 97.12
+        "coverage": 97.12,
+        "msi": 93
     },
     "observed": [
         "Code style",
