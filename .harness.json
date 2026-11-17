@@ -11,8 +11,6 @@
         "msi": 93
     },
     "observed": [
-        "Code style",
-        "Static analysis",
-        "Rector"
+        "Static analysis"
     ]
 }
