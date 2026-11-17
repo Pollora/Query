@@ -8,6 +8,14 @@ use Pollora\Query\QueryException;
 
 class DateQueryBuilder extends SubQuery
 {
+    final public const string POST_CREATED = 'post_date';
+
+    final public const string POST_MODIFIED = 'post_modified';
+
+    final public const string USER_REGISTERED = 'user_registered';
+
+    final public const array ALLOWED_KEYS = ['year', 'month', 'day', 'hour', 'minute', 'second'];
+
     private ?int $year = null;
 
     private ?int $month = null;
@@ -36,25 +44,12 @@ class DateQueryBuilder extends SubQuery
      */
     private array|string|null $before = null;
 
-    final public const POST_CREATED = 'post_date';
-
-    final public const POST_MODIFIED = 'post_modified';
-
-    final public const USER_REGISTERED = 'user_registered';
-
-    final public const ALLOWED_KEYS = ['year', 'month', 'day', 'hour', 'minute', 'second'];
-
-    private ?string $column;
-
     private bool $inclusive = false;
 
     /**
      * Without a column, WP picks the one of the queried table (post_date, user_registered, comment_date).
      */
-    public function __construct(?string $column = null)
-    {
-        $this->column = $column;
-    }
+    public function __construct(private ?string $column = null) {}
 
     public function created(): self
     {
@@ -85,22 +80,6 @@ class DateQueryBuilder extends SubQuery
         $this->column = self::POST_MODIFIED;
 
         return $this;
-    }
-
-    /**
-     * @param  array<string, string|int|array>  $date
-     *
-     * @throws QueryException
-     */
-    private function applyDateArray(array $date): void
-    {
-        foreach ($date as $key => $part) {
-            if (! in_array($key, self::ALLOWED_KEYS, true)) {
-                throw new QueryException('Invalid key '.$key.' element supplied.');
-            }
-
-            $this->$key = (int) $part;
-        }
     }
 
     /**
@@ -184,6 +163,36 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
+     * @return array<string, string|int|array>
+     */
+    public function get(): array
+    {
+        $clause = $this->buildClause();
+
+        if ($this->column === null) {
+            unset($clause['column']);
+        }
+
+        return $this->inclusive ? $clause + ['inclusive' => true] : $clause;
+    }
+
+    /**
+     * @param  array<string, string|int|array>  $date
+     *
+     * @throws QueryException
+     */
+    private function applyDateArray(array $date): void
+    {
+        foreach ($date as $key => $part) {
+            if (! in_array($key, self::ALLOWED_KEYS, true)) {
+                throw new QueryException('Invalid key '.$key.' element supplied.');
+            }
+
+            $this->$key = (int) $part;
+        }
+    }
+
+    /**
      * @return array{
      *   year: string,
      *   month: string,
@@ -213,20 +222,6 @@ class DateQueryBuilder extends SubQuery
         }
 
         return $extracted;
-    }
-
-    /**
-     * @return array<string, string|int|array>
-     */
-    public function get(): array
-    {
-        $clause = $this->buildClause();
-
-        if ($this->column === null) {
-            unset($clause['column']);
-        }
-
-        return $this->inclusive ? $clause + ['inclusive' => true] : $clause;
     }
 
     /**

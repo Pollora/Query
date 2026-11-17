@@ -6,9 +6,9 @@ namespace Pollora\Query\QueryBuilder;
 
 class MetaQueryBuilder extends SubQuery
 {
-    private ComparisonBuilder $comparisonBuilder;
-
     protected ?string $state = null;
+
+    private ComparisonBuilder $comparisonBuilder;
 
     private ?string $compareKey = null;
 

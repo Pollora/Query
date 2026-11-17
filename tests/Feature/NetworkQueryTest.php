@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pollora\Query\NetworkQuery;
 use Pollora\Query\QueryException;
 

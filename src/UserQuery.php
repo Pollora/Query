@@ -17,9 +17,22 @@ use Pollora\Query\Traits\User\Performance;
 use Pollora\Query\Traits\User\Retrieval;
 use WP_User_Query;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class UserQuery
 {
-    use BuildsArguments, DateQuery, Fields, Filters, LimitsResults, MetaField, MetaQuery, Order, PagedResults, Performance, Retrieval;
+    use BuildsArguments;
+    use DateQuery;
+    use Fields;
+    use Filters;
+    use LimitsResults;
+    use MetaField;
+    use MetaQuery;
+    use Order;
+    use PagedResults;
+    use Performance;
+    use Retrieval;
 
     /**
      * @param  array<int>|int|null  $userId  A user ID, or a list of user IDs.

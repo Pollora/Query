@@ -18,9 +18,23 @@ use Pollora\Query\Traits\MetaField;
 use Pollora\Query\Traits\MetaQuery;
 use WP_Comment_Query;
 
+/**
+ * @phpstan-consistent-constructor
+ */
 class CommentQuery
 {
-    use BuildsArguments, Caching, DateQuery, Filters, LimitsResults, MetaField, MetaQuery, Order, PagedResults, PostFilters, Retrieval, SelectsIds;
+    use BuildsArguments;
+    use Caching;
+    use DateQuery;
+    use Filters;
+    use LimitsResults;
+    use MetaField;
+    use MetaQuery;
+    use Order;
+    use PagedResults;
+    use PostFilters;
+    use Retrieval;
+    use SelectsIds;
 
     /**
      * @param  array<int>|int|null  $commentId  A comment ID, or a list of comment IDs.

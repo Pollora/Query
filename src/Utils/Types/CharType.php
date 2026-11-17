@@ -6,5 +6,5 @@ namespace Pollora\Query\Utils\Types;
 
 final class CharType
 {
-    public const CHAR = 'CHAR';
+    public const string CHAR = 'CHAR';
 }

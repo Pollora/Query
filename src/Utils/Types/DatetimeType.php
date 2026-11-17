@@ -6,17 +6,17 @@ namespace Pollora\Query\Utils\Types;
 
 final class DatetimeType implements ValueTypeContract
 {
-    public const DATE = 'DATE';
+    public const string DATE = 'DATE';
 
-    public const DATETIME = 'DATETIME';
+    public const string DATETIME = 'DATETIME';
 
-    public const TIME = 'TIME';
+    public const string TIME = 'TIME';
 
-    private const DATE_REGEX = '/^\d{4}-\d{2}-\d{2}$/';
+    private const string DATE_REGEX = '/^\d{4}-\d{2}-\d{2}$/';
 
-    private const TIME_REGEX = '/^\d{2}:\d{2}:\d{2}$/';
+    private const string TIME_REGEX = '/^\d{2}:\d{2}:\d{2}$/';
 
-    private const DATETIME_REGEX = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/';
+    private const string DATETIME_REGEX = '/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/';
 
     public function detect(mixed $value): ?string
     {

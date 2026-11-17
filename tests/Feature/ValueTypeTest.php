@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Pollora\Query\Utils\Types\BooleanType;
 use Pollora\Query\Utils\Types\CharType;
 use Pollora\Query\Utils\Types\DatetimeType;

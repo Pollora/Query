@@ -45,6 +45,14 @@ class QueryBuilder
         return $this->addCondition('OR', $callback);
     }
 
+    /**
+     * @return array<array|string>
+     */
+    public function get(): array
+    {
+        return $this->query;
+    }
+
     protected function addCondition(string $relation, Closure|SubQuery $callback): self
     {
         $current = &$this->stack[$this->depth];
@@ -110,13 +118,5 @@ class QueryBuilder
         $this->depth--;
 
         $current[] = $subQuery;
-    }
-
-    /**
-     * @return array<array|string>
-     */
-    public function get(): array
-    {
-        return $this->query;
     }
 }

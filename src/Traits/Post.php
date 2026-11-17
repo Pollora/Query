@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits;
 
-use Pollora\Query\PostQuery;
-
 trait Post
 {
     protected ?int $p = null;
@@ -104,7 +102,6 @@ trait Post
 
     /**
      * @param  array<int>  $postParentIn
-     * @return Post|PostQuery
      */
     public function whereParentIn(array $postParentIn): self
     {
@@ -115,7 +112,6 @@ trait Post
 
     /**
      * @param  array<int>  $postParentNotIn
-     * @return Post|PostQuery
      */
     public function whereParentNotIn(array $postParentNotIn): self
     {
@@ -126,7 +122,6 @@ trait Post
 
     /**
      * @param  array<int>  $postIn
-     * @return Post|PostQuery
      */
     public function whereIn(array $postIn): self
     {
@@ -137,7 +132,6 @@ trait Post
 
     /**
      * @param  array<int>  $postNotIn
-     * @return Post|PostQuery
      */
     public function whereNotIn(array $postNotIn): self
     {
@@ -148,7 +142,6 @@ trait Post
 
     /**
      * @param  array<string>  $postSlugIn
-     * @return Post|PostQuery
      */
     public function slugIn(array $postSlugIn): self
     {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits;
 
-use Pollora\Query\PostQuery;
-
 trait Author
 {
     protected ?int $author = null;
@@ -38,7 +36,6 @@ trait Author
 
     /**
      * @param  array<int>  $authorIn
-     * @return PostQuery|Author
      */
     public function authorIn(array $authorIn): self
     {
@@ -49,7 +46,6 @@ trait Author
 
     /**
      * @param  array<int>  $authorNotIn
-     * @return PostQuery|Author
      */
     public function authorNotIn(array $authorNotIn): self
     {

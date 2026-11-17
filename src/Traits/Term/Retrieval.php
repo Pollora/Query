@@ -35,7 +35,7 @@ trait Retrieval
      */
     public function ids(): array
     {
-        return array_map('intval', array_values($this->runOnCopy(function (self $copy): void {
+        return array_map(intval(...), array_values($this->runOnCopy(function (self $copy): void {
             $copy->fields = 'ids';
         })));
     }

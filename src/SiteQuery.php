@@ -18,10 +18,21 @@ use WP_Site_Query;
 
 /**
  * Multisite. The `ID` argument of WP_Site_Query is `whereIn([$id])`.
+ *
+ * @phpstan-consistent-constructor
  */
 class SiteQuery
 {
-    use BuildsArguments, Caching, DateQuery, Filters, LimitsResults, MetaField, MetaQuery, Order, Retrieval, SelectsIds;
+    use BuildsArguments;
+    use Caching;
+    use DateQuery;
+    use Filters;
+    use LimitsResults;
+    use MetaField;
+    use MetaQuery;
+    use Order;
+    use Retrieval;
+    use SelectsIds;
 
     /**
      * @param  array<int>|int|null  $siteId  A site ID, or a list of site IDs.

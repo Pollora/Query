@@ -6,13 +6,13 @@ namespace Pollora\Query\Utils\Types;
 
 final class NumberType implements ValueTypeContract
 {
-    public const NUMERIC = 'NUMERIC';
+    public const string NUMERIC = 'NUMERIC';
 
-    public const DECIMAL = 'DECIMAL';
+    public const string DECIMAL = 'DECIMAL';
 
-    public const SIGNED = 'SIGNED';
+    public const string SIGNED = 'SIGNED';
 
-    public const UNSIGNED = 'UNSIGNED';
+    public const string UNSIGNED = 'UNSIGNED';
 
     public function detect(mixed $value): ?string
     {
