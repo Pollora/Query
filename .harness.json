@@ -9,8 +9,5 @@
         "phpstan_baseline": 0,
         "coverage": 97.12,
         "msi": 93
-    },
-    "observed": [
-        "Static analysis"
-    ]
+    }
 }

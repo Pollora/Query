@@ -18,7 +18,7 @@ trait MetaQuery
 
     public function metaQuery(callable|SubQuery $callback): self
     {
-        $this->addSubQuery('meta', $callback);
+        $this->metaQuery = $this->mergeSubQuery('meta', $this->metaQuery, $callback);
 
         return $this;
     }

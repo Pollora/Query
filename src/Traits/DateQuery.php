@@ -18,7 +18,7 @@ trait DateQuery
 
     public function dateQuery(callable|SubQuery $callback): self
     {
-        $this->addSubQuery('date', $callback);
+        $this->dateQuery = $this->mergeSubQuery('date', $this->dateQuery, $callback);
 
         return $this;
     }
