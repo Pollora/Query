@@ -14,6 +14,6 @@ permissions: {}
 
 jobs:
   harness:
-    uses: Pollora/harness/.github/workflows/php-package.yml@v0.1.28
+    uses: Pollora/harness/.github/workflows/php-package.yml@v0.1.29
     permissions:
       contents: read
