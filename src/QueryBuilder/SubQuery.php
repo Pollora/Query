@@ -41,4 +41,11 @@ abstract class SubQuery
     public const RLIKE = 'RLIKE';
 
     protected string $compare = 'LIKE';
+
+    /**
+     * The WP_Query clause built by this sub-query; may carry a `state` key naming the slot it takes.
+     *
+     * @return array<string, mixed>
+     */
+    abstract public function get(): array;
 }

@@ -18,7 +18,7 @@ trait TaxQuery
 
     public function taxQuery(callable|SubQuery $callback): self
     {
-        $this->addSubQuery('tax', $callback);
+        $this->taxQuery = $this->mergeSubQuery('tax', $this->taxQuery, $callback);
 
         return $this;
     }

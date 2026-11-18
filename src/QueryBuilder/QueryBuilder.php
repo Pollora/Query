@@ -74,7 +74,7 @@ class QueryBuilder
      * holds several clauses, they are grouped first, so that chaining reads like Eloquent:
      * where(a)->where(b)->orWhere(c) is (a AND b) OR c.
      *
-     * @param  array<string, string|int|array>  $current
+     * @param  array<int|string, mixed>  $current
      */
     private function applyRelation(array &$current, string $relation): void
     {

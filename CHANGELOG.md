@@ -9,6 +9,8 @@ Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github
 ### Changed
 
 - Accepts `pollora/wordpress-args` 2.0 (`^1.1 || ^2.0`), which only raises its PHP requirement to 8.3.
+- PHPStan is now a blocking gate (no longer observed): `tagSlugAnd()` is documented as taking slugs (`array<string>`), `SubQuery` declares `get()`, the date builder's array shapes match what it returns. No runtime change.
+- `metaQuery()`, `dateQuery()` and `taxQuery()` share the protected `mergeSubQuery()` (returns the merged query) in place of `addSubQuery()`.
 
 ## [3.0.0] - 2026-10-28
 

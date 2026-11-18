@@ -31,7 +31,7 @@ trait Tag
     protected ?array $tagSlug_And = null;
 
     /**
-     * @var array<int>|null
+     * @var array<string>|null
      */
     protected ?array $tagSlug_In = null;
 
@@ -80,7 +80,7 @@ trait Tag
     }
 
     /**
-     * @param  array<int>  $tagSlugAnd
+     * @param  array<string>  $tagSlugAnd
      */
     public function tagSlugAnd(array $tagSlugAnd): self
     {

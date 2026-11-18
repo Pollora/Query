@@ -29,20 +29,18 @@ class DateQueryBuilder extends SubQuery
     private ?int $second = null;
 
     /**
-     * @var array{
-     *     w: int,
-     *     d: string
-     *  }|string|null
+     * Always an array: every setter goes through extractFromDate(), which never returns a string.
+     *
+     * @var array<string, string|int|array>|null
      */
-    private array|string|null $after = null;
+    private ?array $after = null;
 
     /**
-     * @var array{
-     *     w: int,
-     *     d: string
-     *  }|string|null
+     * Always an array: every setter goes through extractFromDate(), which never returns a string.
+     *
+     * @var array<string, string|int|array>|null
      */
-    private array|string|null $before = null;
+    private ?array $before = null;
 
     private bool $inclusive = false;
 
@@ -193,14 +191,9 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array{
-     *   year: string,
-     *   month: string,
-     *   day: string,
-     *   jour: string,
-     *   minute: string,
-     *   second: string,
-     * }
+     * Extracts the date parts requested by `$extract` as integers, e.g. 'Ymd' gives year, month and day.
+     *
+     * @return array{year?: int, month?: int, day?: int, hour?: int, minute?: int, second?: int}
      */
     private function extractDateDetails(int $date, string $extract): array
     {
@@ -261,8 +254,8 @@ class DateQueryBuilder extends SubQuery
 
     /**
      * @return array{
-     *    column: string,
-     *    before: string|array
+     *    column: string|null,
+     *    before: array<string, string|int|array>
      * }
      */
     private function handleBeforeOnly(): array
@@ -285,15 +278,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array{
-     *   column: string,
-     *   year: string,
-     *   month: string,
-     *   day: string,
-     *   hour: string,
-     *   minute: string,
-     *   second: string,
-     * }
+     * @return array{column: string|null, year?: int, month?: int, day?: int, hour?: int, minute?: int, second?: int}
      */
     private function handleDefault(): array
     {
