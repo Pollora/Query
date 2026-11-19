@@ -6,6 +6,8 @@ Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-11-19
+
 ### Changed
 
 - Accepts `pollora/wordpress-args` 2.0 (`^1.1 || ^2.0`), which only raises its PHP requirement to 8.3.
