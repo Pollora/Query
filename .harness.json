@@ -5,6 +5,7 @@
         "framework"
     ],
     "ratchet": {
+        "type_coverage": 100,
         "phpstan_level": 5,
         "phpstan_baseline": 0,
         "coverage": 97.12,
