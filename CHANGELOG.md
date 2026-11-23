@@ -8,6 +8,8 @@ Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github
 
 ### Fixed
 
+- A float compared through the builder was cast to `DECIMAL(10,0)` by MySQL and MariaDB, so `1.5` and `1.9` both compared as `2` (and a numeric string such as `'1.5'` became `NUMERIC`, which WordPress casts as the integer `SIGNED`). The builder now sends `DECIMAL(precision,scale)` with a scale of at least 10 (`DECIMAL(30,10)`), more when the value has more decimals (up to 30); a list takes the widest scale. `ofType('DECIMAL(10,2)')` still wins. The detected `type` of a float is no longer the bare `DECIMAL`. (#42)
+- `containsAll()` with the children included (the default) matched nothing as soon as a listed term had a child: WordPress adds the children to the `AND` list and asks for a post that has all of them. It now sends one `IN` clause per term joined with `AND` (a post with each term or one of its children),; `excludeChildren()` / `onlyParent()` still send the single `AND` clause. (#42)
 - `TermQuery::count()` returned `0` the first time a count was asked, until WordPress had cached it: `WP_Term_Query` only stores a count in its `terms` property when it comes from its cache, and the builder read it there. It now uses the value `query()` returns.
 
 ### Added

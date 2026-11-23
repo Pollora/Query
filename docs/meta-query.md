@@ -130,14 +130,17 @@ WordPress compares meta values as text unless a `type` is given. The builder **d
 | `0` or `1` (integers) | `BINARY` |
 | a negative integer | `SIGNED` |
 | any other integer | `UNSIGNED` |
-| a float | `DECIMAL` |
+| a float | `DECIMAL(precision,scale)`: `DECIMAL(30,10)` for `1.5` (see below) |
+| a numeric string with a fraction (`'1.5'`) | `DECIMAL(precision,scale)` |
 | a numeric string (`'42'`) | `NUMERIC` |
 | `'2024-03-05'` | `DATE` |
 | `'14:30:00'` | `TIME` |
 | `'2024-03-05 14:30:00'` | `DATETIME` |
 | `null`, any other string, a boolean | `CHAR` |
 
-For a list (`in()`, `between()`…), one type is chosen so that **every** value fits: the common type when they agree, otherwise the widest numeric one (`DECIMAL`, then `NUMERIC`, then `SIGNED`, then `UNSIGNED`), otherwise `CHAR`. An empty list is `CHAR`. So `between(1, 50)` is `UNSIGNED` and `between(-5, 5)` is `SIGNED`.
+For a list (`in()`, `between()`…), one type is chosen so that **every** value fits: the common type when they agree, otherwise the widest numeric one (a decimal, then `NUMERIC`, then `SIGNED`, then `UNSIGNED`), otherwise `CHAR`. An empty list is `CHAR`. So `between(1, 50)` is `UNSIGNED` and `between(-5, 5)` is `SIGNED`.
+
+**Decimals keep their fraction.** A bare `DECIMAL` is `DECIMAL(10,0)` for MySQL and MariaDB, which rounds `1.5` and `1.9` to `2`, and WordPress turns `NUMERIC` into `SIGNED`, an integer. The builder therefore sends a scale of at least 10 (`DECIMAL(30,10)`), and the number of decimals of the value when it has more (up to 30, with 20 digits before the point). The stored values are rounded to that scale before they are compared: for another precision, force it with `ofType('DECIMAL(10,2)')`.
 
 **`BINARY` compares as text.** For `0` and `1` it is fine with `equalTo()`, but if you use `greaterThan(0)` on a numeric field, force the type:
 

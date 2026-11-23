@@ -14,7 +14,7 @@ $dataProvider = [
     ['value' => 5, 'expected' => NumberType::UNSIGNED, 'message' => 'with positive integer value'],
     ['value' => 0, 'expected' => BooleanType::BINARY, 'message' => 'with negative binary value'],
     ['value' => 1, 'expected' => BooleanType::BINARY, 'message' => 'with positive binary value'],
-    ['value' => 5.5, 'expected' => NumberType::DECIMAL, 'message' => 'with float value'],
+    ['value' => 5.5, 'expected' => NumberType::decimal(), 'message' => 'with float value'],
     ['value' => '5', 'expected' => NumberType::NUMERIC, 'message' => 'with numeric string value'],
     ['value' => '2021-01-01', 'expected' => DatetimeType::DATE, 'message' => 'with date value'],
     ['value' => '12:34:56', 'expected' => DatetimeType::TIME, 'message' => 'with time value'],
@@ -33,3 +33,8 @@ foreach ($dataProvider as $data) {
         expect((new ValueTypeDetector($value, $forcedType))->detect())->toBe($expected);
     });
 }
+
+test('MetaQueryBuilder: a float is never the bare DECIMAL, which MySQL reads as DECIMAL(10,0)', function () {
+    expect((new ValueTypeDetector(1.9))->detect())->not->toBe('DECIMAL')
+        ->and((new ValueTypeDetector(1.9))->detect())->toMatch('/^DECIMAL\(\d+,\d+\)$/');
+});

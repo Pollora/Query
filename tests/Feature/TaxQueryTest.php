@@ -180,7 +180,35 @@ test('TaxQuery: containsAll uses the AND operator', function () {
         ->taxQuery(fn (TaxQuery $q) => $q->where($q->taxonomy('genre')->containsAll([1, 2])))
         ->getArguments();
 
-    expect($args['tax_query'][0])->toMatchArray(['operator' => 'AND', 'terms' => [1, 2]]);
+    expect($args['tax_query'][0])->toBe([
+        'relation' => 'AND',
+        ['taxonomy' => 'genre', 'field' => 'term_id', 'terms' => [1], 'operator' => 'IN', 'include_children' => true],
+        ['taxonomy' => 'genre', 'field' => 'term_id', 'terms' => [2], 'operator' => 'IN', 'include_children' => true],
+    ]);
+});
+
+test('TaxQuery: containsAll without children is the single AND clause', function () {
+    $args = PostQuery::select()
+        ->taxQuery(fn (TaxQuery $q) => $q->where($q->taxonomy('genre')->containsAll([1, 2])->excludeChildren()))
+        ->getArguments();
+
+    expect($args['tax_query'][0])->toBe(['taxonomy' => 'genre', 'field' => 'term_id', 'terms' => [1, 2], 'operator' => 'AND', 'include_children' => false]);
+});
+
+test('TaxQuery: containsAll with one term and children is a plain IN clause', function () {
+    $args = PostQuery::select()
+        ->taxQuery(fn (TaxQuery $q) => $q->where($q->taxonomy('genre')->containsAll([1])))
+        ->getArguments();
+
+    expect($args['tax_query'][0])->toMatchArray(['operator' => 'IN', 'terms' => [1], 'include_children' => true]);
+});
+
+test('TaxQuery: containsAll with no term keeps the AND clause WordPress ignores', function () {
+    $args = PostQuery::select()
+        ->taxQuery(fn (TaxQuery $q) => $q->where($q->taxonomy('genre')->containsAll([])))
+        ->getArguments();
+
+    expect($args['tax_query'][0])->toMatchArray(['operator' => 'AND', 'terms' => []]);
 });
 
 test('TaxQuery: Query::tax builds a clause like the closure builder', function () {

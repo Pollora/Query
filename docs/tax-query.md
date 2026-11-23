@@ -62,7 +62,7 @@ For a single clause you can skip the closure: `Query::tax('category')->contains(
 | Method | WordPress `operator` | Matches posts… |
 |---|---|---|
 | `contains(array)` | `IN` | having **at least one** of the terms |
-| `containsAll(array)` | `AND` | having **all** the terms |
+| `containsAll(array)` | `AND` | having **all** the terms (or a child of each, see below) |
 | `notContains(array)` | `NOT IN` | having **none** of the terms |
 | `exists()` | `EXISTS` | having **any** term of the taxonomy |
 | `notExists()` | `NOT EXISTS` | having **no** term of the taxonomy |
@@ -84,14 +84,25 @@ PostQuery::select()
     'tax_query' => [
         'relation' => 'AND',
         [
-            'taxonomy' => 'post_tag',
-            'field' => 'term_id',
-            'terms' => [
-                12,
-                15,
+            'relation' => 'AND',
+            [
+                'taxonomy' => 'post_tag',
+                'field' => 'term_id',
+                'terms' => [
+                    12,
+                ],
+                'operator' => 'IN',
+                'include_children' => true,
             ],
-            'operator' => 'AND',
-            'include_children' => true,
+            [
+                'taxonomy' => 'post_tag',
+                'field' => 'term_id',
+                'terms' => [
+                    15,
+                ],
+                'operator' => 'IN',
+                'include_children' => true,
+            ],
         ],
     ],
 ]
@@ -177,6 +188,8 @@ Query::tax('category')->field('title')
 ## Child terms
 
 For hierarchical taxonomies, WordPress includes the children of the terms you list. Turn that off with `onlyParent()` or `excludeChildren()` (same effect); `includeChildren()` puts it back.
+
+**`containsAll()` and children.** WordPress adds the children of every listed term to an `AND` clause and then asks for a post that has *all* of them, a term and its child together, so no post matches. While children are included, `containsAll()` therefore sends one `IN` clause per term, joined with `AND` (a post that has each term or one of its children, as in the first example of this page). With `onlyParent()` or `excludeChildren()` it sends the single `AND` clause.
 
 ```php
 PostQuery::select()

@@ -226,3 +226,40 @@ it('queries terms, users and comments through their own WordPress classes', func
         ->and(UserQuery::select()->login('wpint_writer')->exists())->toBeTrue()
         ->and(UserQuery::select()->login('wpint_nobody')->exists())->toBeFalse();
 });
+
+it('keeps the fraction of a float meta comparison instead of rounding it to an integer', function (): void {
+    $low = wpintItem('Low', ['wpint_ratio' => '1.5']);
+    $high = wpintItem('High', ['wpint_ratio' => '1.9']);
+    $top = wpintItem('Top', ['wpint_ratio' => '2.4']);
+
+    $ids = fn (callable $compare): array => PostQuery::select()->postType('wpint_item')
+        ->metaQuery(fn (MetaQuery $query) => $query->where($compare($query->meta('wpint_ratio'))))
+        ->ids();
+
+    expect($ids(fn ($meta) => $meta->equalTo(1.5)))->toBe([$low])
+        ->and($ids(fn ($meta) => $meta->greaterThan(1.5)))->toEqualCanonicalizing([$high, $top])
+        ->and($ids(fn ($meta) => $meta->lessThan(1.9)))->toBe([$low])
+        ->and($ids(fn ($meta) => $meta->between(1.6, 2.0)))->toBe([$high])
+        ->and($ids(fn ($meta) => $meta->equalTo('1.9')))->toBe([$high]);
+});
+
+it('matches the posts that have every listed term or a child of it, with children included', function (): void {
+    $rock = wpintGenre('rock');
+    $punk = wpintGenre('punk', $rock);
+    $jazz = wpintGenre('jazz');
+    $bebop = wpintGenre('bebop', $jazz);
+    $onRockAndJazz = wpintItem('Rock and jazz', terms: [$rock, $jazz]);
+    $onPunkAndBebop = wpintItem('Punk and bebop', terms: [$punk, $bebop]);
+    wpintItem('Only rock', terms: [$rock]);
+    wpintItem('Only punk', terms: [$punk]);
+    wpintItem('Only jazz', terms: [$jazz]);
+
+    $all = fn (callable $configure): array => PostQuery::select()->postType('wpint_item')
+        ->taxQuery(fn (TaxQuery $query) => $query->where($configure($query->taxonomy('wpint_genre')->searchByTermSlug())))
+        ->ids();
+
+    expect($all(fn ($clause) => $clause->containsAll(['rock', 'jazz'])))->toEqualCanonicalizing([$onRockAndJazz, $onPunkAndBebop])
+        ->and($all(fn ($clause) => $clause->containsAll(['rock'])))->toHaveCount(4)
+        ->and($all(fn ($clause) => $clause->containsAll(['rock', 'jazz'])->excludeChildren()))->toBe([$onRockAndJazz])
+        ->and($all(fn ($clause) => $clause->containsAll(['rock', 'missing'])))->toBe([]);
+});
