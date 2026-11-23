@@ -65,13 +65,14 @@ trait Retrieval
      */
     public function count(): int
     {
-        $query = new WP_Term_Query($this->copyWith(function (self $copy): void {
+        // The count is what query() returns: WP_Term_Query only stores it in `$terms` when the result comes from its cache.
+        $count = (new WP_Term_Query)->query($this->copyWith(function (self $copy): void {
             $copy->fields = 'count';
             $copy->number = null;
             $copy->offset = null;
         }));
 
-        return (int) $query->terms;
+        return (int) $count;
     }
 
     public function exists(): bool

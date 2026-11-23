@@ -6,6 +6,10 @@ Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github
 
 ## [Unreleased]
 
+### Fixed
+
+- `TermQuery::count()` returned `0` the first time a count was asked, until WordPress had cached it: `WP_Term_Query` only stores a count in its `terms` property when it comes from its cache, and the builder read it there. It now uses the value `query()` returns.
+
 ## [3.1.0] - 2026-11-19
 
 ### Changed
