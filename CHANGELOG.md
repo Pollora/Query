@@ -10,6 +10,10 @@ Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github
 
 - `TermQuery::count()` returned `0` the first time a count was asked, until WordPress had cached it: `WP_Term_Query` only stores a count in its `terms` property when it comes from its cache, and the builder read it there. It now uses the value `query()` returns.
 
+### Added
+
+- An integration suite (`tests/Integration`, `composer test:integration`) that runs the builders against a real WordPress and database. It is kept out of the default test run and out of the Composer archive.
+
 ## [3.1.0] - 2026-11-19
 
 ### Changed
