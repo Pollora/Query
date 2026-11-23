@@ -226,21 +226,38 @@ class TaxQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array{
-     *   taxonomy: string,
-     *   field: string,
-     *   terms: array|null,
-     *   operator: string,
-     *   include_children: bool
-     * }
+     * The WP_Query clause.
+     *
+     * `containsAll()` on a taxonomy whose children are included is a group of one `IN` clause per term, joined with
+     * `AND`: WordPress adds the children of every term to the list of an `AND` clause and then requires a post to have
+     * all of them (a term and its child both), which no post matches. A post that has a term or one of its children,
+     * for every listed term, is what the builder documents.
+     *
+     * @return array<int|string, mixed> A clause: taxonomy, field, terms, operator and include_children; or, for
+     *                                  `containsAll()` with children, `['relation' => 'AND', clause, clause...]`.
      */
     public function get(): array
+    {
+        if ($this->operator === 'AND' && $this->includeChildren && is_array($this->terms) && $this->terms !== []) {
+            $clauses = array_map(fn (string|int $term): array => $this->clause([$term], 'IN'), array_values($this->terms));
+
+            return count($clauses) === 1 ? $clauses[0] : ['relation' => 'AND', ...$clauses];
+        }
+
+        return $this->clause($this->terms, $this->operator);
+    }
+
+    /**
+     * @param  array<string|int>|null  $terms
+     * @return array{taxonomy: string, field: string, terms: array<string|int>|null, operator: string, include_children: bool}
+     */
+    private function clause(?array $terms, string $operator): array
     {
         return [
             'taxonomy' => $this->taxonomy,
             'field' => $this->field,
-            'terms' => $this->terms,
-            'operator' => $this->operator,
+            'terms' => $terms,
+            'operator' => $operator,
             'include_children' => $this->includeChildren,
         ];
     }

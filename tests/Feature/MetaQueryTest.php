@@ -239,7 +239,7 @@ test('MetaQuery: between detects a type that fits both boundaries', function () 
         $query->where($query->meta('e')->in(['x', 3]));
     })->getArguments();
 
-    expect(array_column(array_slice($args['meta_query'], 1), 'type'))->toBe(['UNSIGNED', 'SIGNED', 'DECIMAL', 'DATE', 'CHAR']);
+    expect(array_column(array_slice($args['meta_query'], 1), 'type'))->toBe(['UNSIGNED', 'SIGNED', 'DECIMAL(30,10)', 'DATE', 'CHAR']);
 });
 
 test('MetaQuery: an empty in() list does not raise a warning', function () {

@@ -96,7 +96,12 @@ test('ValueTypeDetector: integers are signed only below zero, and 0 and 1 are bo
 test('ValueTypeDetector: a scalar gets the type of what it holds', function (mixed $value, string $type) {
     expect((new ValueTypeDetector($value))->detect())->toBe($type);
 })->with([
-    'float' => [1.5, 'DECIMAL'],
+    'float' => [1.5, 'DECIMAL(30,10)'],
+    'float with a long fraction' => [0.123456789012, 'DECIMAL(32,12)'],
+    'float with more decimals than a decimal holds' => [0.1234567890123456, 'DECIMAL(35,15)'],
+    'string with a fraction' => ['1.5', 'DECIMAL(30,10)'],
+    'string with a zero fraction' => ['2.0', 'NUMERIC'],
+    'string with an exponent' => ['1.5e-3', 'DECIMAL(30,10)'],
     'numeric string' => ['12', 'NUMERIC'],
     'null' => [null, 'CHAR'],
     'text' => ['abc', 'CHAR'],
@@ -108,10 +113,11 @@ test('ValueTypeDetector: a list takes the widest numeric type, or CHAR as soon a
 })->with([
     'same type' => [[1, 2, 3], 'UNSIGNED'],
     'with a negative' => [[1, -2], 'SIGNED'],
-    'with a float' => [[1, 2.5], 'DECIMAL'],
+    'with a float' => [[1, 2.5], 'DECIMAL(30,10)'],
+    'floats of different scales' => [[1.5, 0.123456789012], 'DECIMAL(32,12)'],
     'with a numeric string' => [[1, '2'], 'NUMERIC'],
     'numeric string and negative' => [['2', -1], 'NUMERIC'],
-    'float over numeric string' => [['2', 1.5], 'DECIMAL'],
+    'float over numeric string' => [['2', 1.5], 'DECIMAL(30,10)'],
     'with text' => [[1, 'x'], 'CHAR'],
     'empty' => [[], 'CHAR'],
 ]);

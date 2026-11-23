@@ -62,19 +62,26 @@ class ValueTypeDetector
             return $types[0];
         }
 
+        $decimals = array_values(array_filter($types, fn (string $type): bool => NumberType::scaleOfType($type) !== null));
         $numeric = [
             BooleanType::BINARY,
             NumberType::UNSIGNED,
             NumberType::SIGNED,
             NumberType::NUMERIC,
-            NumberType::DECIMAL,
         ];
 
-        if (array_diff($types, $numeric) !== []) {
+        if (array_diff($types, $numeric, $decimals) !== []) {
             return CharType::CHAR;
         }
 
-        foreach ([NumberType::DECIMAL, NumberType::NUMERIC, NumberType::SIGNED] as $wider) {
+        if ($decimals !== []) {
+            // The widest scale, so that no value is rounded by the cast.
+            usort($decimals, fn (string $a, string $b): int => NumberType::scaleOfType($b) <=> NumberType::scaleOfType($a));
+
+            return $decimals[0];
+        }
+
+        foreach ([NumberType::NUMERIC, NumberType::SIGNED] as $wider) {
             if (in_array($wider, $types, true)) {
                 return $wider;
             }
