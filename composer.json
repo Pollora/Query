@@ -30,6 +30,7 @@
         }
     },
     "scripts": {
+        "test:integration": "pest -c phpunit.integration.xml --test-directory=tests/Integration",
         "qa": "@php vendor/bin/pollora-qa check",
         "qa:fast": "@php vendor/bin/pollora-qa check --fast"
     }

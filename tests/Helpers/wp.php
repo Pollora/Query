@@ -88,13 +88,29 @@ if (! class_exists('WP_Term_Query')) {
 
         public array $query_vars;
 
-        public mixed $terms;
+        public mixed $terms = null;
 
         public function __construct(array $args = [])
         {
+            if ($args !== []) {
+                $this->query($args);
+            }
+        }
+
+        /**
+         * Like WordPress: the result is returned, and stored in `$terms` except for a count, which WordPress
+         * only stores when it comes from its cache.
+         */
+        public function query(array $args): mixed
+        {
             self::$log[] = $args;
             $this->query_vars = $args;
-            $this->terms = self::$fakeTerms;
+
+            if (($args['fields'] ?? '') !== 'count') {
+                $this->terms = self::$fakeTerms;
+            }
+
+            return self::$fakeTerms;
         }
     }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Configuration of the integration suite: `vendor/bin/pest -c phpunit.integration.xml`. It is kept apart from
+    phpunit.xml so that the unit suite (Brain Monkey doubles) never loads a real WordPress, and the other way round.
+    Exclude tests/Integration from the suites of phpunit.xml.
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="tests/Integration/bootstrap.php"
+         colors="true"
+         backupGlobals="false"
+         cacheDirectory=".phpunit.cache/integration"
+         failOnWarning="true"
+         failOnRisky="true"
+>
+    <testsuites>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
