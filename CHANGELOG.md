@@ -6,6 +6,10 @@ Earlier releases (1.0 to 1.0.3) are listed on the [releases page](https://github
 
 ## [Unreleased]
 
+### Changed
+
+- PHPStan runs at level 8 (was 5). The PHPDoc types of the builders now say what they hold and accept (clause arrays, `commentCount()`, `postType()`, `postStatus()`, `postMimeType()`, the date builder). No query changed.
+
 ## [3.1.1] - 2026-11-23
 
 ### Fixed
