@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Pollora\Query\Traits\Concerns;
 
+use WP_Comment_Query;
+use WP_Network_Query;
+use WP_Site_Query;
+
 /**
  * Terminal methods for the queries whose `query()` returns a list, or a number when `count` is set
  * (WP_Comment_Query, WP_Site_Query, WP_Network_Query).
@@ -68,6 +72,8 @@ trait RetrievesRecords
 
     /**
      * A fresh WP_*_Query object, whose `query(array $args)` method is called with the arguments.
+     *
+     * @return WP_Comment_Query|WP_Network_Query|WP_Site_Query
      */
     abstract protected function newWpQuery(): object;
 

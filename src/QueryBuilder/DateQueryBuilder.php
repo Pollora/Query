@@ -164,7 +164,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array<mixed>>
+     * @return array<string, mixed>
      */
     public function get(): array
     {
