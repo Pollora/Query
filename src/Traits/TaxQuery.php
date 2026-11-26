@@ -12,7 +12,7 @@ trait TaxQuery
     use SubQueryTrait;
 
     /**
-     * @var array<string|array>
+     * @var array<int|string, mixed>|null
      */
     protected ?array $taxQuery = null;
 

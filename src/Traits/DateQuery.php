@@ -12,7 +12,7 @@ trait DateQuery
     use SubQueryTrait;
 
     /**
-     * @var array<string|array>
+     * @var array<int|string, mixed>|null
      */
     protected ?array $dateQuery = null;
 

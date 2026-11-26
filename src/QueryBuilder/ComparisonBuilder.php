@@ -29,7 +29,7 @@ class ComparisonBuilder
     }
 
     /**
-     * @return array<string, string|int|array|null>
+     * @return array<string, mixed>
      */
     public function buildConfig(): array
     {

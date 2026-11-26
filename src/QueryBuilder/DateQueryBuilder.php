@@ -31,14 +31,14 @@ class DateQueryBuilder extends SubQuery
     /**
      * Always an array: every setter goes through extractFromDate(), which never returns a string.
      *
-     * @var array<string, string|int|array>|null
+     * @var array<string, string|int|array<mixed>>|null
      */
     private ?array $after = null;
 
     /**
      * Always an array: every setter goes through extractFromDate(), which never returns a string.
      *
-     * @var array<string, string|int|array>|null
+     * @var array<string, string|int|array<mixed>>|null
      */
     private ?array $before = null;
 
@@ -81,6 +81,8 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
+     * @param  array<string, string|int|array<mixed>>|string  $date
+     *
      * @throws QueryException
      */
     public function within(array|string $date, string $extract = 'YmdHis'): self
@@ -102,7 +104,8 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @param  array<string, string|int|array>|string  $toDate
+     * @param  array<string, string|int|array<mixed>>|string  $fromDate
+     * @param  array<string, string|int|array<mixed>>|string  $toDate
      *
      * @throws QueryException
      */
@@ -116,7 +119,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @param  array<string, string|int|array>|string  $beforeDate
+     * @param  array<string, string|int|array<mixed>>|string  $beforeDate
      *
      * @throws QueryException
      */
@@ -128,7 +131,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @param  array<string, string|int|array>|string  $afterDate
+     * @param  array<string, string|int|array<mixed>>|string  $afterDate
      *
      * @throws QueryException
      */
@@ -140,8 +143,8 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @param  array<string, string|int|array>|string  $date
-     * @return array<string, string|int|array>
+     * @param  array<string, string|int|array<mixed>>|string  $date
+     * @return array<string, string|int|array<mixed>>
      *
      * @throws QueryException
      */
@@ -161,7 +164,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array>
+     * @return array<string, string|int|array<mixed>>
      */
     public function get(): array
     {
@@ -175,7 +178,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @param  array<string, string|int|array>  $date
+     * @param  array<string, string|int|array<mixed>>  $date
      *
      * @throws QueryException
      */
@@ -218,7 +221,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array>
+     * @return array<string, string|int|array<mixed>>
      */
     private function buildClause(): array
     {
@@ -241,7 +244,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array>
+     * @return array<string, string|int|array<mixed>>
      */
     private function handleBeforeAndAfter(): array
     {
@@ -255,7 +258,7 @@ class DateQueryBuilder extends SubQuery
     /**
      * @return array{
      *    column: string|null,
-     *    before: array<string, string|int|array>
+     *    before: array<string, string|int|array<mixed>>
      * }
      */
     private function handleBeforeOnly(): array
@@ -267,7 +270,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array>
+     * @return array<string, string|int|array<mixed>>
      */
     private function handleAfterOnly(): array
     {
