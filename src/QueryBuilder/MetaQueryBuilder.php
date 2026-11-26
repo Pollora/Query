@@ -105,7 +105,7 @@ class MetaQueryBuilder extends SubQuery
     }
 
     /**
-     * @param  array<array|int|string>  $value
+     * @param  array<array<mixed>|int|string>  $value
      * @return $this
      */
     public function in(array $value): self
@@ -116,7 +116,7 @@ class MetaQueryBuilder extends SubQuery
     }
 
     /**
-     * @param  array<array|int|string>  $value
+     * @param  array<array<mixed>|int|string>  $value
      * @return $this
      */
     public function notIn(array $value): self
@@ -189,7 +189,7 @@ class MetaQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array>
+     * @return array<string, mixed>
      */
     public function get(): array
     {

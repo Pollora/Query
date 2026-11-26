@@ -56,6 +56,9 @@ class PostQuery
     use Tag;
     use TaxQuery;
 
+    /**
+     * @param  array<int>|int|null  $postId  A post ID, or a list of post IDs.
+     */
     public function __construct(array|int|null $postId = null, ?string $fields = null)
     {
         if (is_int($postId)) {
@@ -69,6 +72,9 @@ class PostQuery
         }
     }
 
+    /**
+     * @param  array<int>|int|null  $postId
+     */
     public static function find(array|int|null $postId = null): self
     {
         return new static($postId);

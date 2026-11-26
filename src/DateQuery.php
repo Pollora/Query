@@ -30,7 +30,7 @@ class DateQuery extends QueryBuilder
     }
 
     /**
-     * @return array<array|string>
+     * @return array<int|string, string|array<int|string, mixed>>
      */
     public function get(): array
     {
@@ -40,8 +40,8 @@ class DateQuery extends QueryBuilder
     }
 
     /**
-     * @param  array<array|string>  $query
-     * @return array<array|string>
+     * @param  array<int|string, string|array<int|string, mixed>>  $query
+     * @return array<int|string, string|array<int|string, mixed>>
      */
     private function applyInclusive(array $query): array
     {
@@ -61,7 +61,7 @@ class DateQuery extends QueryBuilder
     /**
      * A first-order clause holds time keys, as opposed to a group of clauses.
      *
-     * @param  array<array|string>  $clause
+     * @param  array<int|string, mixed>  $clause
      */
     private function isClause(array $clause): bool
     {

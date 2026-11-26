@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pollora\Query\Traits;
 
 use Pollora\Query\Traits\Concerns\CopiesBuilder;
+use WP_Post;
 use WP_Query;
 
 /**
@@ -45,7 +46,7 @@ trait Retrieval
             $copy->noFoundRows = true;
         });
 
-        return array_map(intval(...), $query->posts);
+        return array_map(static fn (int|string|WP_Post $post): int => $post instanceof WP_Post ? $post->ID : (int) $post, $query->posts ?: []);
     }
 
     /**

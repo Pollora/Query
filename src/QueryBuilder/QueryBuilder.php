@@ -9,12 +9,14 @@ use Closure;
 class QueryBuilder
 {
     /**
-     * @var array<string|array>
+     * @var array<int|string, string|array<int|string, mixed>>
      */
     protected array $query = ['relation' => 'AND'];
 
     /**
-     * @var array<string|array>
+     * References to the level being filled, indexed by depth.
+     *
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $stack = [];
 
@@ -46,7 +48,7 @@ class QueryBuilder
     }
 
     /**
-     * @return array<array|string>
+     * @return array<int|string, string|array<int|string, mixed>>
      */
     public function get(): array
     {
@@ -90,7 +92,7 @@ class QueryBuilder
     }
 
     /**
-     * @param  $current  array<string, string|int|array>
+     * @param  array<int|string, mixed>  $current
      */
     private function handleSubQuery(array &$current, SubQuery $subQueryInstance): void
     {
@@ -107,7 +109,7 @@ class QueryBuilder
     }
 
     /**
-     * @param  $current  array<string, string|int|array>
+     * @param  array<int|string, mixed>  $current
      */
     private function handleCallback(array &$current, Closure $callback): void
     {

@@ -11,6 +11,9 @@ trait Retrieval
 {
     use RetrievesRecords;
 
+    /**
+     * @return WP_Comment_Query
+     */
     protected function newWpQuery(): object
     {
         return new WP_Comment_Query;

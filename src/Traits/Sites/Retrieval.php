@@ -11,6 +11,9 @@ trait Retrieval
 {
     use RetrievesRecords;
 
+    /**
+     * @return WP_Site_Query
+     */
     protected function newWpQuery(): object
     {
         return new WP_Site_Query;
