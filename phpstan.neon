@@ -1,6 +1,6 @@
 includes:
     - vendor/pollora/harness/presets/phpstan/base.neon
 parameters:
-    level: 7
+    level: 8
     paths:
         - src

@@ -221,7 +221,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array<mixed>>
+     * @return array<string, mixed>
      */
     private function buildClause(): array
     {
@@ -244,7 +244,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array<mixed>>
+     * @return array<string, mixed>
      */
     private function handleBeforeAndAfter(): array
     {
@@ -256,10 +256,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array{
-     *    column: string|null,
-     *    before: array<string, string|int|array<mixed>>
-     * }
+     * @return array<string, mixed>
      */
     private function handleBeforeOnly(): array
     {
@@ -270,7 +267,7 @@ class DateQueryBuilder extends SubQuery
     }
 
     /**
-     * @return array<string, string|int|array<mixed>>
+     * @return array<string, mixed>
      */
     private function handleAfterOnly(): array
     {

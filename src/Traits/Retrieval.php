@@ -46,7 +46,7 @@ trait Retrieval
             $copy->noFoundRows = true;
         });
 
-        return array_map(static fn (int|string|WP_Post $post): int => $post instanceof WP_Post ? $post->ID : (int) $post, $query->posts);
+        return array_map(static fn (int|string|WP_Post $post): int => $post instanceof WP_Post ? $post->ID : (int) $post, $query->posts ?: []);
     }
 
     /**
