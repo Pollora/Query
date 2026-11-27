@@ -14,7 +14,7 @@ permissions: {}
 
 jobs:
   harness:
-    uses: Pollora/harness/.github/workflows/php-package.yml@v0.1.40
+    uses: Pollora/harness/.github/workflows/php-package.yml@v0.1.41
     with:
       # Runs the integration suite against a real WordPress and a real MySQL (job "WordPress integration"). The job
       # starts it through the test:integration script of composer.json.
